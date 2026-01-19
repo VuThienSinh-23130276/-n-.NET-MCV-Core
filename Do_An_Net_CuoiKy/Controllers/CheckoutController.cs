@@ -17,6 +17,7 @@ namespace Do_An_Net_CuoiKy.Controllers
 
         public async Task<IActionResult> Index()
         {
+
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId is null)
             {
