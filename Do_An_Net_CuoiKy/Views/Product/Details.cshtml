@@ -1,0 +1,227 @@
+@{
+    ViewData["Title"] = "Chi Tiết Sản Phẩm";
+    var productId = ViewBag.ProductId ?? 1;
+}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <div class="container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang Chủ</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Product" asp-action="Index">Sản Phẩm</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Chi Tiết</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Product Details Section -->
+<section class="py-4">
+    <div class="container">
+        <div class="row">
+            <!-- Product Images -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <img src="https://via.placeholder.com/600x600?text=Product+@productId" class="img-fluid rounded shadow" alt="Sản phẩm @productId" id="mainImage">
+                </div>
+                <div class="row g-2">
+                    <div class="col-3">
+                        <img src="https://via.placeholder.com/150x150?text=1" class="img-fluid rounded border cursor-pointer" onclick="changeImage(this.src)" alt="Thumbnail 1">
+                    </div>
+                    <div class="col-3">
+                        <img src="https://via.placeholder.com/150x150?text=2" class="img-fluid rounded border cursor-pointer" onclick="changeImage(this.src)" alt="Thumbnail 2">
+                    </div>
+                    <div class="col-3">
+                        <img src="https://via.placeholder.com/150x150?text=3" class="img-fluid rounded border cursor-pointer" onclick="changeImage(this.src)" alt="Thumbnail 3">
+                    </div>
+                    <div class="col-3">
+                        <img src="https://via.placeholder.com/150x150?text=4" class="img-fluid rounded border cursor-pointer" onclick="changeImage(this.src)" alt="Thumbnail 4">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="col-md-6">
+                <h1 class="mb-3">Sản Phẩm @productId</h1>
+                <div class="rating mb-3">
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star-half-alt text-warning"></i>
+                    <span class="ms-2">(4.5) - 120 đánh giá</span>
+                </div>
+                <div class="price mb-4">
+                    <span class="h2 text-danger fw-bold">@((productId * 50000).ToString("N0"))đ</span>
+                    <span class="text-muted text-decoration-line-through ms-2">@((productId * 62500).ToString("N0"))đ</span>
+                    <span class="badge bg-danger ms-2">-20%</span>
+                </div>
+
+                <div class="mb-4">
+                    <h5>Mô Tả Sản Phẩm</h5>
+                    <p class="text-muted">
+                        Sản phẩm chất lượng cao, được làm từ nguyên liệu tự nhiên, an toàn cho thú cưng của bạn. 
+                        Sản phẩm được nhập khẩu và kiểm định chất lượng nghiêm ngặt.
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="mb-3">Số Lượng:</h6>
+                    <div class="input-group" style="width: 150px;">
+                        <button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity()">-</button>
+                        <input type="number" class="form-control text-center" value="1" min="1" id="quantity">
+                        <button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity()">+</button>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex mb-4">
+                    <button class="btn btn-primary btn-lg flex-fill">
+                        <i class="fas fa-shopping-cart me-2"></i>Thêm Vào Giỏ Hàng
+                    </button>
+                    <button class="btn btn-outline-danger btn-lg">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+
+                <div class="border-top pt-4">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <i class="fas fa-shipping-fast fa-2x text-primary mb-2"></i>
+                            <p class="small mb-0">Miễn phí vận chuyển</p>
+                        </div>
+                        <div class="col-4">
+                            <i class="fas fa-undo fa-2x text-primary mb-2"></i>
+                            <p class="small mb-0">Đổi trả trong 7 ngày</p>
+                        </div>
+                        <div class="col-4">
+                            <i class="fas fa-shield-alt fa-2x text-primary mb-2"></i>
+                            <p class="small mb-0">Bảo hành chính hãng</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Tabs -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button">
+                            Mô Tả
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="specs-tab" data-bs-toggle="tab" data-bs-target="#specs" type="button">
+                            Thông Số
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button">
+                            Đánh Giá (120)
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content p-4 border border-top-0 rounded-bottom" id="productTabsContent">
+                    <div class="tab-pane fade show active" id="description" role="tabpanel">
+                        <h5>Chi Tiết Sản Phẩm</h5>
+                        <p>Sản phẩm được thiết kế đặc biệt để đáp ứng nhu cầu của thú cưng của bạn. Với chất liệu cao cấp và quy trình sản xuất nghiêm ngặt, sản phẩm đảm bảo an toàn và hiệu quả.</p>
+                        <ul>
+                            <li>Chất liệu tự nhiên, an toàn</li>
+                            <li>Được kiểm định chất lượng</li>
+                            <li>Phù hợp với mọi loại thú cưng</li>
+                            <li>Dễ sử dụng và bảo quản</li>
+                        </ul>
+                    </div>
+                    <div class="tab-pane fade" id="specs" role="tabpanel">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th>Thương Hiệu</th>
+                                    <td>PetShop Premium</td>
+                                </tr>
+                                <tr>
+                                    <th>Xuất Xứ</th>
+                                    <td>Việt Nam</td>
+                                </tr>
+                                <tr>
+                                    <th>Trọng Lượng</th>
+                                    <td>500g</td>
+                                </tr>
+                                <tr>
+                                    <th>Kích Thước</th>
+                                    <td>20 x 15 x 10 cm</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade" id="reviews" role="tabpanel">
+                        <div class="mb-4">
+                            <h5>Đánh Giá Từ Khách Hàng</h5>
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    <h2 class="mb-0">4.5</h2>
+                                    <div class="rating">
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star-half-alt text-warning"></i>
+                                    </div>
+                                    <small class="text-muted">120 đánh giá</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review-item border-bottom pb-3 mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <strong>Nguyễn Văn A</strong>
+                                <div class="rating">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                            </div>
+                            <p class="text-muted mb-0">Sản phẩm rất tốt, thú cưng của tôi rất thích!</p>
+                            <small class="text-muted">2 ngày trước</small>
+                        </div>
+                        <div class="review-item border-bottom pb-3 mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <strong>Trần Thị B</strong>
+                                <div class="rating">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                </div>
+                            </div>
+                            <p class="text-muted mb-0">Chất lượng tốt, giá cả hợp lý.</p>
+                            <small class="text-muted">5 ngày trước</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function changeImage(src) {
+            document.getElementById('mainImage').src = src;
+        }
+
+        function increaseQuantity() {
+            const qty = document.getElementById('quantity');
+            qty.value = parseInt(qty.value) + 1;
+        }
+
+        function decreaseQuantity() {
+            const qty = document.getElementById('quantity');
+            if (parseInt(qty.value) > 1) {
+                qty.value = parseInt(qty.value) - 1;
+            }
+        }
+    </script>
+}
