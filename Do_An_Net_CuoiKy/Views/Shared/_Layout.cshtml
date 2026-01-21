@@ -49,11 +49,25 @@
                                 Sản Phẩm
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="Product" asp-action="Index">Tất Cả Sản Phẩm</a></li>
-                                <li><a class="dropdown-item" href="#">Thức Ăn</a></li>
-                                <li><a class="dropdown-item" href="#">Đồ Chơi</a></li>
-                                <li><a class="dropdown-item" href="#">Phụ Kiện</a></li>
-                                <li><a class="dropdown-item" href="#">Chăm Sóc</a></li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="Index">Tất Cả Sản Phẩm</a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="Index" asp-route-categoryIds="1">Chó Cưng</a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="Index" asp-route-categoryIds="2">Mèo cưng</a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="Index" asp-route-categoryIds="3">Phụ Kiện</a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="Index" asp-route-categoryIds="4">Thức ăn</a>
+                                </li>
                             </ul>
                         </li>
                         <li class="nav-item">

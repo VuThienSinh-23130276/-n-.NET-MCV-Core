@@ -1,5 +1,6 @@
-﻿@{
-    ViewData["Title"] = "Trang Chủ";
+﻿@model List<Do_An_Net_CuoiKy.Models.Product>
+@{
+ViewData["Title"] = "Trang Chủ";
 }
 
 <!-- Hero Section -->
@@ -17,167 +18,159 @@
                 </a>
             </div>
             <div class="col-md-6 text-center">
-                <img src="https://via.placeholder.com/600x400?text=Pet+Shop+Hero" alt="Pet Shop" class="img-fluid rounded">
+                <img src="~/logo.png" asp-append-version="true" alt="Pet Shop Logo" class="img-fluid rounded">
             </div>
         </div>
     </div>
 </section>
 
 <!-- Categories Section -->
+
 <section id="categories" class="py-5">
     <div class="container">
-        <div class="section-title">
-            <h2>Danh Mục Sản Phẩm</h2>
-            <p>Khám phá các danh mục sản phẩm đa dạng cho thú cưng của bạn</p>
+        <div class="section-title text-center mb-4">
+            <h2>Danh Mục Cửa Hàng</h2>
+            <p>Tất cả những gì thú cưng của bạn cần</p>
         </div>
         <div class="row g-4">
+
             <div class="col-md-3 col-sm-6">
-                <div class="category-card">
-                    <i class="fas fa-bone"></i>
-                    <h5>Thức Ăn</h5>
-                    <p class="text-muted">Thức ăn dinh dưỡng</p>
-                </div>
+                <a asp-controller="Product" asp-action="Index" asp-route-categoryIds="1" class="text-decoration-none text-dark">
+                    <div class="category-card h-100 text-center p-4 border rounded shadow-sm hover-effect">
+                        <i class="fas fa-dog fa-3x mb-3" style="color: #8B4513;"></i>
+                        <h5>Chó cưng</h5>
+                        <p class="text-muted small">Những chú cún cưng đáng yêu </p>
+                    </div>
+                </a>
             </div>
+
             <div class="col-md-3 col-sm-6">
-                <div class="category-card">
-                    <i class="fas fa-baseball-ball"></i>
-                    <h5>Đồ Chơi</h5>
-                    <p class="text-muted">Đồ chơi vui nhộn</p>
-                </div>
+                <a asp-controller="Product" asp-action="Index" asp-route-categoryIds="2" class="text-decoration-none text-dark">
+                    <div class="category-card h-100 text-center p-4 border rounded shadow-sm hover-effect">
+                        <i class="fas fa-cat fa-3x text-warning mb-3"></i>
+                        <h5>Mèo cưng</h5>
+                        <p class="text-muted small">Những chú mèo dễ thương</p>
+                    </div>
+                </a>
             </div>
+
             <div class="col-md-3 col-sm-6">
-                <div class="category-card">
-                    <i class="fas fa-tshirt"></i>
-                    <h5>Phụ Kiện</h5>
-                    <p class="text-muted">Phụ kiện thời trang</p>
-                </div>
+                <a asp-controller="Product" asp-action="Index" asp-route-categoryIds="3" class="text-decoration-none text-dark">
+                    <div class="category-card h-100 text-center p-4 border rounded shadow-sm hover-effect">
+                        <i class="fas fa-tshirt fa-3x text-info mb-3"></i>
+                        <h5>Phụ Kiện</h5>
+                        <p class="text-muted small">Quần áo, vòng cổ...</p>
+                    </div>
+                </a>
             </div>
+
             <div class="col-md-3 col-sm-6">
-                <div class="category-card">
-                    <i class="fas fa-spa"></i>
-                    <h5>Chăm Sóc</h5>
-                    <p class="text-muted">Sản phẩm chăm sóc</p>
-                </div>
+                <a asp-controller="Product" asp-action="Index" asp-route-categoryIds="4" class="text-decoration-none text-dark">
+                    <div class="category-card h-100 text-center p-4 border rounded shadow-sm hover-effect">
+                        <i class="fas fa-drumstick-bite fa-3x text-danger mb-3"></i>
+                        <h5>Thức ăn</h5>
+                        <p class="text-muted small">Thức ăn cho thú cưng </p>
+                    </div>
+                </a>
             </div>
+
         </div>
     </div>
 </section>
 
+<style>
+    .hover-effect {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background-color: white;
+    }
+
+        .hover-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+            cursor: pointer;
+            border-color: #0d6efd !important; /* Đổi màu viền khi hover */
+        }
+</style>
 <!-- Featured Products Section -->
 <section class="py-5 bg-light">
     <div class="container">
-        <div class="section-title">
+        <div class="section-title text-center mb-5">
             <h2>Sản Phẩm Nổi Bật</h2>
-            <p>Những sản phẩm được yêu thích nhất</p>
+            <p>Những sản phẩm mới nhất vừa về shop</p>
         </div>
+
         <div class="row g-4">
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="card product-card">
-                    <span class="badge bg-danger position-absolute top-0 start-0 m-2">-20%</span>
-                    <img src="https://via.placeholder.com/300x300?text=Product+1" class="card-img-top" alt="Sản phẩm 1">
-                    <div class="card-body">
-                        <div class="rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span class="ms-1">(4.5)</span>
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card product-card h-100 shadow-sm border-0">
+
+                        @if (item.OldPrice > item.Price)
+                        {
+                            <span class="badge bg-danger position-absolute top-0 start-0 m-2">
+                                -@((int)((item.OldPrice - item.Price) / item.OldPrice * 100))%
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
+                        }
+
+                        <div class="overflow-hidden" style="height: 250px;">
+                            <img src="@item.ImageUrl" class="card-img-top w-100 h-100" style="object-fit: cover;"
+                                 alt="@item.Name"
+                                 onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
                         </div>
-                        <h5 class="card-title">Thức Ăn Khô Cho Chó</h5>
-                        <div class="price">
-                            250.000đ
-                            <span class="old-price">300.000đ</span>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-shopping-cart me-2"></i>Thêm Vào Giỏ
-                            </button>
-                            <a href="@Url.Action("Details", "Product", new { id = 1 })" class="btn btn-outline-primary">Xem Chi Tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="card product-card">
-                    <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
-                    <img src="https://via.placeholder.com/300x300?text=Product+2" class="card-img-top" alt="Sản phẩm 2">
-                    <div class="card-body">
-                        <div class="rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                            <span class="ms-1">(4.0)</span>
-                        </div>
-                        <h5 class="card-title">Đồ Chơi Xương Gặm</h5>
-                        <div class="price">
-                            150.000đ
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-shopping-cart me-2"></i>Thêm Vào Giỏ
-                            </button>
-                            <a href="@Url.Action("Details", "Product", new { id = 2 })" class="btn btn-outline-primary">Xem Chi Tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="card product-card">
-                    <img src="https://via.placeholder.com/300x300?text=Product+3" class="card-img-top" alt="Sản phẩm 3">
-                    <div class="card-body">
-                        <div class="rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="ms-1">(5.0)</span>
-                        </div>
-                        <h5 class="card-title">Vòng Cổ Thời Trang</h5>
-                        <div class="price">
-                            180.000đ
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-shopping-cart me-2"></i>Thêm Vào Giỏ
-                            </button>
-                            <a href="@Url.Action("Details", "Product", new { id = 3 })" class="btn btn-outline-primary">Xem Chi Tiết</a>
+
+                        <div class="card-body d-flex flex-column">
+                            <div class="rating text-warning mb-2 small">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= Math.Round(item.Rating))
+                                    {
+                                        <i class="fas fa-star"></i>
+                                    }
+                                    else
+                                    {
+
+                                        <i class="far fa-star text-muted"></i>
+                                    }
+                                }
+                                <span class="text-muted ms-1">(@item.ReviewCount)</span>
+                            </div>
+
+                            <h5 class="card-title text-truncate">
+                                <a href="@Url.Action("Details", "Product", new { id = item.Id })" class="text-dark text-decoration-none" title="@item.Name">
+                                    @item.Name
+                                </a>
+                            </h5>
+
+                            <div class="price mb-3">
+                                <span class="fw-bold text-danger fs-5">@item.Price.ToString("#,##0")đ</span>
+                                @if (item.OldPrice > item.Price)
+                                {
+                                    <span class="text-decoration-line-through text-muted ms-2 small">
+                                        @(((decimal)item.OldPrice).ToString("#,##0"))đ
+                                    </span>
+                                }
+                            </div>
+
+                            <div class="d-grid gap-2 mt-auto">
+                                <button class="btn btn-primary btn-sm btnAddToCart" data-id="@item.Id">
+                                    <i class="fas fa-cart-plus me-2"></i>Thêm Giỏ
+                                </button>
+                                <a href="@Url.Action("Details", "Product", new { id = item.Id })" class="btn btn-outline-secondary btn-sm">
+                                    Xem Chi Tiết
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="card product-card">
-                    <span class="badge bg-primary position-absolute top-0 start-0 m-2">Hot</span>
-                    <img src="https://via.placeholder.com/300x300?text=Product+4" class="card-img-top" alt="Sản phẩm 4">
-                    <div class="card-body">
-                        <div class="rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span class="ms-1">(4.5)</span>
-                        </div>
-                        <h5 class="card-title">Sữa Tắm Cho Chó</h5>
-                        <div class="price">
-                            120.000đ
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-shopping-cart me-2"></i>Thêm Vào Giỏ
-                            </button>
-                            <a href="@Url.Action("Details", "Product", new { id = 4 })" class="btn btn-outline-primary">Xem Chi Tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
-        <div class="text-center mt-4">
-            <a href="@Url.Action("Index", "Product")" class="btn btn-primary btn-lg">
+
+        <div class="text-center mt-5">
+            <a href="@Url.Action("Index", "Product")" class="btn btn-primary btn-lg px-5 rounded-pill shadow">
                 Xem Tất Cả Sản Phẩm <i class="fas fa-arrow-right ms-2"></i>
             </a>
         </div>
