@@ -19,14 +19,19 @@ namespace Do_An_Net_CuoiKy.Controllers
 
         public async Task<IActionResult> Index(int? page, string searchString, int[] categoryIds, string priceRange, string sortOrder, int? minRating)
         {
-            // 1. Lấy dữ liệu ban đầu
             var products = _context.Products.Include(p => p.Category).AsQueryable();
-            ViewBag.Categories = _context.Categories.ToList(); // Gửi danh mục sang View
+            ViewBag.Categories = _context.Categories.ToList();
 
-            // 2. Xử lý Tìm kiếm (Search)
+            // 1. Xử lý Tìm kiếm
             if (!string.IsNullOrEmpty(searchString))
             {
-                products = products.Where(p => p.Name.Contains(searchString));
+                if (!string.IsNullOrWhiteSpace(searchString))
+                {
+                    searchString = searchString.Trim();
+                    products = products.Where(p =>
+                        EF.Functions.Like(p.Name, $"%{searchString}%"));
+                }
+
             }
 
             // 3. Xử lý Lọc Danh mục

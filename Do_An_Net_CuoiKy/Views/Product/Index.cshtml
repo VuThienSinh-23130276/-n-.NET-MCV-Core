@@ -125,6 +125,22 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+                    // Xử lý khi người dùng submit form tìm kiếm trên Header (Layout)
+        $('form[role="search"]').submit(function(e) {
+            // Chỉ chặn submit mặc định nếu đang ở trang Sản phẩm (có #filterForm)
+            if ($('#filterForm').length > 0) {
+                e.preventDefault(); // Chặn load lại trang
+
+                // 1. Lấy từ khóa từ thanh search
+                var keyword = $(this).find('input[name="searchString"]').val();
+
+                // 2. Gán từ khóa vào input hidden trong bộ lọc Sidebar
+                $('input[name="searchString"][type="hidden"]').val(keyword);
+
+                // 3. Gọi hàm submit của bộ lọc để chạy AJAX
+                $('#filterForm').submit();
+            }
+        });
 
             // Hàm chung để gọi AJAX
             function loadProducts(url, data) {
@@ -177,7 +193,9 @@
                 var url = $(this).attr('href'); // Lấy link: /Product?page=2...
 
                 if (url) {
-                    loadProducts(url, "");
+                           var data = $('#filterForm').serialize();
+        loadProducts(url, data);
+
                 }
             });
         });

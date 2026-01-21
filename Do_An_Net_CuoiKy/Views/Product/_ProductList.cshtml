@@ -51,7 +51,15 @@
 </div>
 
 <div class="pagination-container mt-4 d-flex justify-content-center">
-    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+    @Html.PagedListPager(Model, page => Url.Action("Index", new {
+    page,
+    searchString = ViewBag.CurrentSearch,
+    categoryIds = ViewBag.CurrentCategoryIds,
+    priceRange = ViewBag.CurrentPrice,
+    sortOrder = ViewBag.CurrentSort,
+    minRating = ViewBag.CurrentMinRating
+})
+,
     new PagedListRenderOptions {
         LiElementClasses = new string[] { "page-item" },
         PageClasses = new string[] { "page-link" },

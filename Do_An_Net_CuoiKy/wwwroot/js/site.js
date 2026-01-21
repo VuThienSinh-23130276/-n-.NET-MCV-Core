@@ -108,16 +108,4 @@ function changeImage(src) {
     }
 }
 
-// Search functionality
-const searchForm = document.querySelector('form[role="search"]');
-if (searchForm) {
-    searchForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const searchInput = this.querySelector('input[type="search"]');
-        const searchTerm = searchInput.value.trim();
-        if (searchTerm) {
-            // Redirect to product page with search term
-            window.location.href = `/Product?search=${encodeURIComponent(searchTerm)}`;
-        }
-    });
-}
+

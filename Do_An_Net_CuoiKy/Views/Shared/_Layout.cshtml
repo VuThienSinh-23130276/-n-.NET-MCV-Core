@@ -76,9 +76,14 @@
                         </li>
                     </ul>
                     <div class="d-flex align-items-center">
-                        <form class="d-flex me-3" role="search">
-                            <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
-                            <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i></button>
+                        <form action="@Url.Action("Index", "Product")" method="get" class="d-flex me-3" role="search">
+                            <input class="form-control me-2"
+                                   type="search"
+                                   name="searchString"
+                                   placeholder="Tìm kiếm..."
+                                   value="@ViewBag.CurrentSearch"> <button class="btn btn-outline-primary" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
                         </form>
                         <div class="d-flex align-items-center">
                             <a href="@Url.Action("Index", "Cart")" class="btn btn-outline-primary me-2 position-relative">
