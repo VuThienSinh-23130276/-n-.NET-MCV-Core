@@ -1,9 +1,8 @@
 ﻿@model List<Do_An_Net_CuoiKy.Models.Product>
 @{
-ViewData["Title"] = "Trang Chủ";
+    ViewData["Title"] = "Trang Chủ";
 }
 
-<!-- Hero Section -->
 <section class="hero-section">
     <div class="container">
         <div class="row align-items-center">
@@ -24,8 +23,6 @@ ViewData["Title"] = "Trang Chủ";
     </div>
 </section>
 
-<!-- Categories Section -->
-
 <section id="categories" class="py-5">
     <div class="container">
         <div class="section-title text-center mb-4">
@@ -34,7 +31,7 @@ ViewData["Title"] = "Trang Chủ";
         </div>
         <div class="row g-4">
 
-            <div class="col-md-3 col-sm-6">
+            <div class="col-md-4 col-sm-6">
                 <a asp-controller="Product" asp-action="Index" asp-route-categoryIds="1" class="text-decoration-none text-dark">
                     <div class="category-card h-100 text-center p-4 border rounded shadow-sm hover-effect">
                         <i class="fas fa-dog fa-3x mb-3" style="color: #8B4513;"></i>
@@ -44,7 +41,7 @@ ViewData["Title"] = "Trang Chủ";
                 </a>
             </div>
 
-            <div class="col-md-3 col-sm-6">
+            <div class="col-md-4 col-sm-6">
                 <a asp-controller="Product" asp-action="Index" asp-route-categoryIds="2" class="text-decoration-none text-dark">
                     <div class="category-card h-100 text-center p-4 border rounded shadow-sm hover-effect">
                         <i class="fas fa-cat fa-3x text-warning mb-3"></i>
@@ -54,22 +51,12 @@ ViewData["Title"] = "Trang Chủ";
                 </a>
             </div>
 
-            <div class="col-md-3 col-sm-6">
+            <div class="col-md-4 col-sm-6">
                 <a asp-controller="Product" asp-action="Index" asp-route-categoryIds="3" class="text-decoration-none text-dark">
                     <div class="category-card h-100 text-center p-4 border rounded shadow-sm hover-effect">
                         <i class="fas fa-tshirt fa-3x text-info mb-3"></i>
                         <h5>Phụ Kiện</h5>
                         <p class="text-muted small">Quần áo, vòng cổ...</p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-3 col-sm-6">
-                <a asp-controller="Product" asp-action="Index" asp-route-categoryIds="4" class="text-decoration-none text-dark">
-                    <div class="category-card h-100 text-center p-4 border rounded shadow-sm hover-effect">
-                        <i class="fas fa-drumstick-bite fa-3x text-danger mb-3"></i>
-                        <h5>Thức ăn</h5>
-                        <p class="text-muted small">Thức ăn cho thú cưng </p>
                     </div>
                 </a>
             </div>
@@ -91,7 +78,6 @@ ViewData["Title"] = "Trang Chủ";
             border-color: #0d6efd !important; /* Đổi màu viền khi hover */
         }
 </style>
-<!-- Featured Products Section -->
 <section class="py-5 bg-light">
     <div class="container">
         <div class="section-title text-center mb-5">
@@ -177,7 +163,6 @@ ViewData["Title"] = "Trang Chủ";
     </div>
 </section>
 
-<!-- Why Choose Us Section -->
 <section class="py-5">
     <div class="container">
         <div class="section-title">
