@@ -1,0 +1,49 @@
+﻿@model Do_An_Net_CuoiKy.Models.Category
+
+<div class="modal fade" id="categoryModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Danh mục</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" id="categoryId" />
+
+                <div class="mb-3">
+                    <label>Tên danh mục</label>
+                    <input class="form-control" id="categoryName" />
+                </div>
+
+                <div class="mb-3">
+                    <label>Mô tả</label>
+                    <textarea class="form-control" id="categoryDescription"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label>Ảnh danh mục</label>
+                    <input type="file" class="form-control" id="categoryImage" accept="image/*">
+                </div>
+
+                <div class="mb-3">
+                    <img id="previewImage"
+                         src=""
+                         style="max-width:120px; display:none;"
+                         class="rounded border">
+                </div>
+
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="categoryActive" checked>
+                    <label class="form-check-label">Kích hoạt</label>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button class="btn btn-primary" onclick="saveCategory()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>

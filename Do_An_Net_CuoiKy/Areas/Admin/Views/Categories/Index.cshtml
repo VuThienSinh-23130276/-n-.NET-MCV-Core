@@ -1,0 +1,82 @@
+﻿@model List<Do_An_Net_CuoiKy.Models.Category>
+@Html.AntiForgeryToken()
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h4 class="mb-0 fw-bold">Quản lý danh mục</h4>
+                <small class="text-muted">Cửa hàng thú cưng</small>
+            </div>
+
+            <button class="btn btn-primary" onclick="openCreateModal()">
+                <i class="fa fa-plus me-1"></i> Thêm danh mục
+            </button>
+        </div>
+
+        <table class="table table-bordered align-middle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên</th>
+                    <th>Mô tả</th>
+                    <th>Ảnh</th>
+                    <th>Kích hoạt</th>
+                    <th class="text-end">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="row-@item.Id">
+                        <td>@item.Id</td>
+
+                        <!-- TÊN -->
+                        <td class="fw-semibold">@item.Name</td>
+
+                        <!-- MÔ TẢ -->
+                        <td class="text-muted">@item.Description</td>
+
+                        <!-- ẢNH -->
+                        <td>
+                            <img src="@(string.IsNullOrEmpty(item.ImageUrl)
+                                             ? "/images/no-image.png"
+                                             : item.ImageUrl)"
+                             class="rounded"
+                             style="width:50px;height:50px;object-fit:cover" />
+                    </td>
+
+                        <!-- KÍCH HOẠT -->
+                        <td>
+                            <label class="switch">
+                                <input type="checkbox"
+                                       @(item.IsActive ? "checked" : "")
+                                       onchange="toggleActive(@item.Id, this)">
+                                <span class="slider"></span>
+                            </label>
+                        </td>
+
+                        <!-- ACTION -->
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-warning me-1"
+                                    onclick="openEdit(@item.Id)">
+                                <i class="fa fa-pen"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger"
+                                    onclick="deleteCategory(@item.Id)">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+@await Html.PartialAsync("_CategoryModal", new Do_An_Net_CuoiKy.Models.Category())
+
+@section Scripts {
+    <script src="~/js/admin-categories.js"></script>
+}

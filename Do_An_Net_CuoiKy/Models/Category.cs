@@ -19,7 +19,7 @@ namespace Do_An_Net_CuoiKy.Models
 
         public bool IsActive { get; set; } = true;
 
-        // Navigation properties
+        // Navigation properties    
         public virtual ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

@@ -1,0 +1,114 @@
+﻿@model List<Do_An_Net_CuoiKy.Models.Product>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold">Quản lý sản phẩm</h3>
+        <small class="text-muted">Cửa hàng thú cưng</small>
+    </div>
+
+    <button class="btn btn-primary" onclick="openCreateProduct()">
+        + Thêm sản phẩm
+    </button>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card p-3 shadow-sm">
+            <div class="text-muted">Tổng sản phẩm</div>
+            <h3>@ViewBag.Total</h3>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3 shadow-sm">
+            <div class="text-muted">Đang hoạt động</div>
+            <h3 class="text-success">@ViewBag.Active</h3>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3 shadow-sm">
+            <div class="text-muted">Sắp hết hàng</div>
+            <h3 class="text-warning">@ViewBag.LowStock</h3>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card p-3 shadow-sm">
+            <div class="text-muted">Tổng giá trị kho</div>
+            <h3 class="text-primary">
+                @String.Format("{0:N0} đ", ViewBag.InventoryValue)
+            </h3>
+        </div>
+    </div>
+</div>
+
+<table class="table align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Danh mục</th>
+            <th>Giá</th>
+            <th>Tồn</th>
+            <th>Rating</th>
+            <th>Kích hoạt</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Id</td>
+
+                <td>
+                    <strong>@p.Name</strong><br />
+                    <small class="text-muted">@p.Description</small>
+                </td>
+
+                <td>
+                    <span class="badge bg-primary">@p.Category?.Name</span>
+                </td>
+
+                <td>
+                    <strong>@String.Format("{0:N0} đ", p.Price)</strong><br />
+                    @if (p.OldPrice != null)
+                    {
+                        <small class="text-muted text-decoration-line-through">
+                            @String.Format("{0:N0} đ", p.OldPrice)
+                        </small>
+                    }
+                </td>
+
+                <td>
+                    <span class="badge @(p.Stock < 20 ? "bg-warning" : "bg-success")">
+                        @p.Stock
+                    </span>
+                </td>
+
+                <td>
+                    ⭐ @p.Rating (@p.ReviewCount)
+                </td>
+
+                <td>
+                    <input type="checkbox" class="form-check-input" checked="@p.IsActive" />
+                </td>
+
+                <td class="text-end">
+                    <button class="btn btn-sm btn-warning">
+                        <i class="fa fa-pen"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@await Html.PartialAsync("_ProductModal", new Do_An_Net_CuoiKy.Models.Product())
+@section Scripts {
+    <script src="~/js/admin-products.js"></script>
+}

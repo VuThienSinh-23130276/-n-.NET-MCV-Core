@@ -1,3 +1,6 @@
+using Do_An_Net_CuoiKy.Data;
+using Microsoft.EntityFrameworkCore;
+
 // TẠM THỜI COMMENT ĐỂ TEST FRONTEND KHÔNG CẦN DATABASE
 // using Do_An_Net_CuoiKy.Data;
 // using Microsoft.EntityFrameworkCore;
@@ -13,6 +16,16 @@ builder.Services.AddControllersWithViews();
 // var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 // builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //     options.UseSqlServer(connectionString));
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseMySql(
+        connectionString,
+        ServerVersion.AutoDetect(connectionString)
+    );
+});
 
 var app = builder.Build();
 
@@ -30,6 +43,10 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
