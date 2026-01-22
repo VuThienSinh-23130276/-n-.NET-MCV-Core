@@ -35,7 +35,7 @@ namespace Do_An_Net_CuoiKy.Models
 
         // Navigation properties
         [ForeignKey("UserId")]
-        public virtual User? User { get; set; }
+        public ApplicationUser? User { get; set; }
 
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
     }

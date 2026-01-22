@@ -28,6 +28,6 @@ namespace Do_An_Net_CuoiKy.Models
         public virtual Product? Product { get; set; }
 
         [ForeignKey("UserId")]
-        public virtual User? User { get; set; }
+        public ApplicationUser? User { get; set; }
     }
 }

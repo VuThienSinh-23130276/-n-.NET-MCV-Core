@@ -2,6 +2,11 @@
 // using Do_An_Net_CuoiKy.Data;
 // using Microsoft.EntityFrameworkCore;
 
+using Do_An_Net_CuoiKy.Data;
+using Do_An_Net_CuoiKy.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -28,6 +33,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapStaticAssets();
 
@@ -38,3 +44,11 @@ app.MapControllerRoute(
 
 
 app.Run();
+
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
