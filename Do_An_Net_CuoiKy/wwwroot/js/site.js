@@ -1,4 +1,4 @@
-﻿// Add to cart functionality
+// Add to cart functionality
 document.addEventListener('DOMContentLoaded', function() {
     // Add to cart buttons
     const addToCartButtons = document.querySelectorAll('.btn-primary');

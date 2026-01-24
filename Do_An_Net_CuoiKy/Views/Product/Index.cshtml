@@ -18,11 +18,9 @@
     </div>
 </nav>
 
-<!-- Products Section -->
 <section class="py-4">
     <div class="container">
         <div class="row">
-            <!-- Sidebar Filter -->
             <div class="col-md-3 mb-4">
                 <form id="filterForm" asp-action="Index" method="get">
                     <input type="hidden" name="searchString" value="@ViewBag.CurrentSearch" />
@@ -33,7 +31,6 @@
                             <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Bộ Lọc</h5>
                         </div>
                         <div class="card-body">
-                        <!-- Category Filter -->
                             <div class="mb-4">
                                 <h6 class="fw-bold mb-3">Danh Mục</h6>
                                 @if (ViewBag.Categories != null)
@@ -48,162 +45,88 @@
                                         }
 
                                         <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="cat1" checked>
-                                <label class="form-check-label" for="cat1">Thức Ăn</label>
+                                            <input class="form-check-input" type="checkbox" name="categoryIds" value="@cat.Id" id="cat_@cat.Id" @(isChecked ? "checked" : "")>
+                                            <label class="form-check-label" for="cat_@cat.Id">@cat.Name</label>
                                         </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="cat2">
-                                <label class="form-check-label" for="cat2">Đồ Chơi</label>
+                                    }
+                                }
                             </div>
 
                             <div class="mb-4">
                                 <h6 class="fw-bold mb-3">Khoảng Giá</h6>
                                 <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="cat3">
-                                <label class="form-check-label" for="cat3">Phụ Kiện</label>
+                                    <input class="form-check-input" type="radio" name="priceRange" value="" id="price_all" @(string.IsNullOrEmpty(ViewBag.CurrentPrice) ? "checked" : "")>
+                                    <label class="form-check-label" for="price_all">Tất cả mức giá</label>
                                 </div>
                                 <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="cat4">
-                                <label class="form-check-label" for="cat4">Chăm Sóc</label>
-                            </div>
-                        </div>
-
-                        <!-- Price Filter -->
-                        <div class="mb-4">
-                            <h6 class="fw-bold mb-3">Giá</h6>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="price" id="price1">
+                                    <input class="form-check-input" type="radio" name="priceRange" value="duoi100" id="price1" @(ViewBag.CurrentPrice == "duoi100" ? "checked" : "")>
                                     <label class="form-check-label" for="price1">Dưới 100.000đ</label>
                                 </div>
                                 <div class="form-check">
-                                <input class="form-check-input" type="radio" name="price" id="price2">
-                                <label class="form-check-label" for="price2">100.000đ - 300.000đ</label>
+                                    <input class="form-check-input" type="radio" name="priceRange" value="100-300" id="price2" @(ViewBag.CurrentPrice == "100-300" ? "checked" : "")>
+                                    <label class="form-check-label" for="price2">100.000đ - 300.000đ</label>
                                 </div>
                                 <div class="form-check">
-                                <input class="form-check-input" type="radio" name="price" id="price3">
-                                <label class="form-check-label" for="price3">300.000đ - 500.000đ</label>
+                                    <input class="form-check-input" type="radio" name="priceRange" value="300-500" id="price3" @(ViewBag.CurrentPrice == "300-500" ? "checked" : "")>
+                                    <label class="form-check-label" for="price3">300.000đ - 500.000đ</label>
                                 </div>
                                 <div class="form-check">
-                                <input class="form-check-input" type="radio" name="price" id="price4">
-                                <label class="form-check-label" for="price4">Trên 500.000đ</label>
+                                    <input class="form-check-input" type="radio" name="priceRange" value="tren500" id="price4" @(ViewBag.CurrentPrice == "tren500" ? "checked" : "")>
+                                    <label class="form-check-label" for="price4">Trên 500.000đ</label>
                                 </div>
                             </div>
 
-                        <!-- Rating Filter -->
                             <div class="mb-4">
                                 <h6 class="fw-bold mb-3">Đánh Giá</h6>
                                 <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="rating5">
+                                    <input class="form-check-input" type="radio" name="minRating" value="" id="rating_all" @(ViewBag.CurrentMinRating == null ? "checked" : "")>
+                                    <label class="form-check-label" for="rating_all">Tất cả sao</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="minRating" value="5" id="rating5" @(ViewBag.CurrentMinRating == 5 ? "checked" : "")>
                                     <label class="form-check-label" for="rating5">
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i>
+                                        <span class="small text-muted">(5/5)</span>
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="rating4">
+                                    <input class="form-check-input" type="radio" name="minRating" value="4" id="rating4" @(ViewBag.CurrentMinRating == 4 ? "checked" : "")>
                                     <label class="form-check-label" for="rating4">
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="far fa-star text-warning"></i>
-                                    Trở lên
+                                        <i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="far fa-star text-warning"></i>
+                                        <span class="small text-muted">(Từ 4 sao)</span>
                                     </label>
                                 </div>
                             </div>
 
-                        <button class="btn btn-primary w-100">Áp Dụng</button>
-                        <button class="btn btn-outline-secondary w-100 mt-2">Đặt Lại</button>
+                            <button type="submit" class="btn btn-primary w-100">Áp Dụng</button>
+                            <a href="@Url.Action("Index")" class="btn btn-outline-secondary w-100 mt-2">Đặt Lại</a>
                         </div>
                     </div>
                 </form>
             </div>
 
-            <!-- Products Grid -->
             <div class="col-md-9">
-                <!-- Sort and View Options -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <span class="text-muted">Hiển thị 1-12 của 48 sản phẩm</span>
-                    </div>
+                    <div></div>
                     <div class="d-flex align-items-center">
                         <label class="me-2">Sắp xếp:</label>
-                        <select class="form-select form-select-sm" style="width: auto;">
-                            <option>Mặc định</option>
-                            <option>Giá: Thấp đến Cao</option>
-                            <option>Giá: Cao đến Thấp</option>
-                            <option>Mới nhất</option>
-                            <option>Bán chạy nhất</option>
+                        <select name="sortOrder" class="form-select form-select-sm" style="width: auto;">
+                            <option value="">Mặc định</option>
+                            <option value="price_asc" @(ViewBag.CurrentSort == "price_asc" ? "selected" : "")>Giá: Thấp đến Cao</option>
+                            <option value="price_desc" @(ViewBag.CurrentSort == "price_desc" ? "selected" : "")>Giá: Cao đến Thấp</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Products -->
-                <div class="row g-4">
-                    @for (int i = 1; i <= 12; i++)
-                    {
-                        <div class="col-lg-4 col-md-6">
-                            <div class="card product-card">
-                                @if (i % 3 == 0)
-                                {
-                                    <span class="badge bg-danger position-absolute top-0 start-0 m-2">-20%</span>
-                                }
-                                else if (i % 4 == 0)
-                                {
-                                    <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
-                                }
-                                <img src="https://via.placeholder.com/300x300?text=Product+@i" class="card-img-top" alt="Sản phẩm @i">
-                                <div class="card-body">
-                                    <div class="rating">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                        <span class="ms-1">(4.5)</span>
-                                    </div>
-                                    <h5 class="card-title">Sản Phẩm @i</h5>
-                                    <div class="price">
-                                        @((i * 50000).ToString("N0"))đ
-                                        @if (i % 3 == 0)
-                                        {
-                                            <span class="old-price">@((i * 62500).ToString("N0"))đ</span>
-                                        }
-                                    </div>
-                                    <div class="d-grid gap-2">
-                                        <button class="btn btn-primary">
-                                            <i class="fas fa-shopping-cart me-2"></i>Thêm Vào Giỏ
-                                        </button>
-                                        <a href="@Url.Action("Details", "Product", new { id = i })" class="btn btn-outline-primary">Xem Chi Tiết</a>
-                                    </div>
-                                </div>
+                <div id="productContainer">
+                    @await Html.PartialAsync("_ProductList", Model)
                 </div>
 
                 <div id="loading" class="text-center mt-5" style="display:none;">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
-                    }
                 </div>
-
-                <!-- Pagination -->
-                <nav aria-label="Page navigation" class="mt-5">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1">Trước</a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">4</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Sau</a>
-                        </li>
-                    </ul>
-                </nav>
             </div>
         </div>
     </div>
@@ -212,35 +135,26 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-                    // Xử lý khi người dùng submit form tìm kiếm trên Header (Layout)
-        $('form[role="search"]').submit(function(e) {
-            // Chỉ chặn submit mặc định nếu đang ở trang Sản phẩm (có #filterForm)
-            if ($('#filterForm').length > 0) {
-                e.preventDefault(); // Chặn load lại trang
+            $('form[role="search"]').submit(function (e) {
+                if ($('#filterForm').length > 0) {
+                    e.preventDefault();
+                    var keyword = $(this).find('input[name="searchString"]').val();
+                    $('input[name="searchString"][type="hidden"]').val(keyword);
+                    $('#filterForm').submit();
+                }
+            });
 
-                // 1. Lấy từ khóa từ thanh search
-                var keyword = $(this).find('input[name="searchString"]').val();
-
-                // 2. Gán từ khóa vào input hidden trong bộ lọc Sidebar
-                $('input[name="searchString"][type="hidden"]').val(keyword);
-
-                // 3. Gọi hàm submit của bộ lọc để chạy AJAX
-                $('#filterForm').submit();
-            }
-        });
-
-            // Hàm chung để gọi AJAX
             function loadProducts(url, data) {
-                $('#productContainer').css('opacity', '0.5'); // Làm mờ danh sách cũ
-                $('#loading').show(); // Hiện icon loading
+                $('#productContainer').css('opacity', '0.5');
+                $('#loading').show();
 
                 $.ajax({
                     url: url,
                     data: data,
                     success: function (response) {
-                        $('#productContainer').html(response); // Đổ dữ liệu mới vào
-                        $('#productContainer').css('opacity', '1'); // Hết mờ
-                        $('#loading').hide(); // Ẩn loading
+                        $('#productContainer').html(response);
+                        $('#productContainer').css('opacity', '1');
+                        $('#loading').hide();
                     },
                     error: function () {
                         alert("Có lỗi xảy ra khi tải dữ liệu!");
@@ -250,39 +164,27 @@
                 });
             }
 
-            // 1. Bắt sự kiện khi bấm nút "Áp Dụng" ở Sidebar
             $('#filterForm').submit(function (e) {
-                e.preventDefault(); // Chặn không cho load lại trang
+                e.preventDefault();
                 var url = $(this).attr('action');
-                var data = $(this).serialize(); // Gom dữ liệu: categoryIds=1&priceRange=duoi100...
+                var data = $(this).serialize();
                 loadProducts(url, data);
             });
 
-            // 2. Bắt sự kiện khi thay đổi Sắp xếp (Dropdown)
-            // Vì cái dropdown nằm trong file Index nên bắt sự kiện change bình thường
-            $('select[name="sortOrder"]').change(function() {
-                 var url = $('#filterForm').attr('action');
-
-                 // Gom dữ liệu từ form lọc + giá trị sắp xếp mới
-                 var formData = $('#filterForm').serialize();
-                 var sortValue = $(this).val();
-
-                 // Ghép chuỗi thủ công một chút cho chắc ăn
-                 var fullData = formData + "&sortOrder=" + sortValue;
-
-                 loadProducts(url, fullData);
+            $('select[name="sortOrder"]').change(function () {
+                var url = $('#filterForm').attr('action');
+                var formData = $('#filterForm').serialize();
+                var sortValue = $(this).val();
+                var fullData = formData + "&sortOrder=" + sortValue;
+                loadProducts(url, fullData);
             });
 
-            // 3. Bắt sự kiện khi bấm Phân trang (Số 1, 2, 3...)
-            // Vì thanh phân trang nằm trong PartialView (được sinh ra sau), nên phải dùng 'on'
             $('body').on('click', '.pagination a', function (e) {
-                e.preventDefault(); // Chặn link gốc
-                var url = $(this).attr('href'); // Lấy link: /Product?page=2...
-
+                e.preventDefault();
+                var url = $(this).attr('href');
                 if (url) {
-                           var data = $('#filterForm').serialize();
-        loadProducts(url, data);
-
+                    var data = $('#filterForm').serialize();
+                    loadProducts(url, data);
                 }
             });
         });
