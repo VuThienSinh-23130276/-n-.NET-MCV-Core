@@ -165,10 +165,10 @@ namespace Do_An_Net_CuoiKy.Controllers
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId is null)
-            {
+        {
                 TempData["Error"] = "Vui lòng đăng nhập để xem đơn hàng.";
                 return RedirectToAction("Login", "Account");
-            }
+        }
 
             var order = await _db.Orders
                 .AsNoTracking()
@@ -177,7 +177,7 @@ namespace Do_An_Net_CuoiKy.Controllers
             if (order is null) return NotFound();
 
             var vm = new OrderSuccessViewModel
-            {
+        {
                 OrderId = order.Id,
                 OrderDate = order.OrderDate,
                 TotalAmount = order.TotalAmount

@@ -125,15 +125,15 @@
                         <div class="card-body">
                             @foreach (var item in Model.Items)
                             {
-                                <div class="cart-item">
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <div>
+                            <div class="cart-item">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div>
                                             <h6 class="mb-0">@item.ProductName</h6>
                                             <small class="text-muted">x@item.Quantity</small>
-                                        </div>
-                                        <span>@($"{item.LineTotal:N0}đ")</span>
                                     </div>
+                                        <span>@($"{item.LineTotal:N0}đ")</span>
                                 </div>
+                            </div>
                             }
                             <hr>
                             <div class="d-flex justify-content-between mb-2">
@@ -146,10 +146,10 @@
                             </div>
                             @if (Model.Discount > 0)
                             {
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Giảm giá:</span>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Giảm giá:</span>
                                     <span class="text-danger">-@($"{Model.Discount:N0}đ")</span>
-                                </div>
+                            </div>
                             }
                             <hr>
                             <div class="d-flex justify-content-between mb-3">

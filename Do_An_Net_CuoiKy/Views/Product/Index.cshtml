@@ -1,3 +1,9 @@
+@using X.PagedList.Mvc.Core
+@using X.PagedList
+@using X.PagedList.Web.Common
+
+@model IPagedList<Do_An_Net_CuoiKy.Models.Product>
+
 @{
     ViewData["Title"] = "Sản Phẩm";
 }
@@ -18,27 +24,45 @@
         <div class="row">
             <!-- Sidebar Filter -->
             <div class="col-md-3 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Bộ Lọc</h5>
-                    </div>
-                    <div class="card-body">
+                <form id="filterForm" asp-action="Index" method="get">
+                    <input type="hidden" name="searchString" value="@ViewBag.CurrentSearch" />
+                    <input type="hidden" name="sortOrder" value="@ViewBag.CurrentSort" />
+
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Bộ Lọc</h5>
+                        </div>
+                        <div class="card-body">
                         <!-- Category Filter -->
-                        <div class="mb-4">
-                            <h6 class="fw-bold mb-3">Danh Mục</h6>
-                            <div class="form-check">
+                            <div class="mb-4">
+                                <h6 class="fw-bold mb-3">Danh Mục</h6>
+                                @if (ViewBag.Categories != null)
+                                {
+                                    foreach (var cat in ViewBag.Categories)
+                                    {
+                                        bool isChecked = false;
+                                        if (ViewBag.CurrentCategoryIds != null)
+                                        {
+                                            int[] currentIds = (int[])ViewBag.CurrentCategoryIds;
+                                            isChecked = currentIds.Contains((int)cat.Id);
+                                        }
+
+                                        <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="cat1" checked>
                                 <label class="form-check-label" for="cat1">Thức Ăn</label>
-                            </div>
+                                        </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="cat2">
                                 <label class="form-check-label" for="cat2">Đồ Chơi</label>
                             </div>
-                            <div class="form-check">
+
+                            <div class="mb-4">
+                                <h6 class="fw-bold mb-3">Khoảng Giá</h6>
+                                <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="cat3">
                                 <label class="form-check-label" for="cat3">Phụ Kiện</label>
-                            </div>
-                            <div class="form-check">
+                                </div>
+                                <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="cat4">
                                 <label class="form-check-label" for="cat4">Chăm Sóc</label>
                             </div>
@@ -49,52 +73,53 @@
                             <h6 class="fw-bold mb-3">Giá</h6>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="price" id="price1">
-                                <label class="form-check-label" for="price1">Dưới 100.000đ</label>
-                            </div>
-                            <div class="form-check">
+                                    <label class="form-check-label" for="price1">Dưới 100.000đ</label>
+                                </div>
+                                <div class="form-check">
                                 <input class="form-check-input" type="radio" name="price" id="price2">
                                 <label class="form-check-label" for="price2">100.000đ - 300.000đ</label>
-                            </div>
-                            <div class="form-check">
+                                </div>
+                                <div class="form-check">
                                 <input class="form-check-input" type="radio" name="price" id="price3">
                                 <label class="form-check-label" for="price3">300.000đ - 500.000đ</label>
-                            </div>
-                            <div class="form-check">
+                                </div>
+                                <div class="form-check">
                                 <input class="form-check-input" type="radio" name="price" id="price4">
                                 <label class="form-check-label" for="price4">Trên 500.000đ</label>
+                                </div>
                             </div>
-                        </div>
 
                         <!-- Rating Filter -->
-                        <div class="mb-4">
-                            <h6 class="fw-bold mb-3">Đánh Giá</h6>
-                            <div class="form-check">
+                            <div class="mb-4">
+                                <h6 class="fw-bold mb-3">Đánh Giá</h6>
+                                <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="rating5">
-                                <label class="form-check-label" for="rating5">
+                                    <label class="form-check-label" for="rating5">
                                     <i class="fas fa-star text-warning"></i>
                                     <i class="fas fa-star text-warning"></i>
                                     <i class="fas fa-star text-warning"></i>
                                     <i class="fas fa-star text-warning"></i>
                                     <i class="fas fa-star text-warning"></i>
-                                </label>
-                            </div>
-                            <div class="form-check">
+                                    </label>
+                                </div>
+                                <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="rating4">
-                                <label class="form-check-label" for="rating4">
+                                    <label class="form-check-label" for="rating4">
                                     <i class="fas fa-star text-warning"></i>
                                     <i class="fas fa-star text-warning"></i>
                                     <i class="fas fa-star text-warning"></i>
                                     <i class="fas fa-star text-warning"></i>
                                     <i class="far fa-star text-warning"></i>
                                     Trở lên
-                                </label>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
 
                         <button class="btn btn-primary w-100">Áp Dụng</button>
                         <button class="btn btn-outline-secondary w-100 mt-2">Đặt Lại</button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
 
             <!-- Products Grid -->
@@ -155,8 +180,12 @@
                                         <a href="@Url.Action("Details", "Product", new { id = i })" class="btn btn-outline-primary">Xem Chi Tiết</a>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+                </div>
+
+                <div id="loading" class="text-center mt-5" style="display:none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
                     }
                 </div>
 
@@ -179,3 +208,83 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+                    // Xử lý khi người dùng submit form tìm kiếm trên Header (Layout)
+        $('form[role="search"]').submit(function(e) {
+            // Chỉ chặn submit mặc định nếu đang ở trang Sản phẩm (có #filterForm)
+            if ($('#filterForm').length > 0) {
+                e.preventDefault(); // Chặn load lại trang
+
+                // 1. Lấy từ khóa từ thanh search
+                var keyword = $(this).find('input[name="searchString"]').val();
+
+                // 2. Gán từ khóa vào input hidden trong bộ lọc Sidebar
+                $('input[name="searchString"][type="hidden"]').val(keyword);
+
+                // 3. Gọi hàm submit của bộ lọc để chạy AJAX
+                $('#filterForm').submit();
+            }
+        });
+
+            // Hàm chung để gọi AJAX
+            function loadProducts(url, data) {
+                $('#productContainer').css('opacity', '0.5'); // Làm mờ danh sách cũ
+                $('#loading').show(); // Hiện icon loading
+
+                $.ajax({
+                    url: url,
+                    data: data,
+                    success: function (response) {
+                        $('#productContainer').html(response); // Đổ dữ liệu mới vào
+                        $('#productContainer').css('opacity', '1'); // Hết mờ
+                        $('#loading').hide(); // Ẩn loading
+                    },
+                    error: function () {
+                        alert("Có lỗi xảy ra khi tải dữ liệu!");
+                        $('#loading').hide();
+                        $('#productContainer').css('opacity', '1');
+                    }
+                });
+            }
+
+            // 1. Bắt sự kiện khi bấm nút "Áp Dụng" ở Sidebar
+            $('#filterForm').submit(function (e) {
+                e.preventDefault(); // Chặn không cho load lại trang
+                var url = $(this).attr('action');
+                var data = $(this).serialize(); // Gom dữ liệu: categoryIds=1&priceRange=duoi100...
+                loadProducts(url, data);
+            });
+
+            // 2. Bắt sự kiện khi thay đổi Sắp xếp (Dropdown)
+            // Vì cái dropdown nằm trong file Index nên bắt sự kiện change bình thường
+            $('select[name="sortOrder"]').change(function() {
+                 var url = $('#filterForm').attr('action');
+
+                 // Gom dữ liệu từ form lọc + giá trị sắp xếp mới
+                 var formData = $('#filterForm').serialize();
+                 var sortValue = $(this).val();
+
+                 // Ghép chuỗi thủ công một chút cho chắc ăn
+                 var fullData = formData + "&sortOrder=" + sortValue;
+
+                 loadProducts(url, fullData);
+            });
+
+            // 3. Bắt sự kiện khi bấm Phân trang (Số 1, 2, 3...)
+            // Vì thanh phân trang nằm trong PartialView (được sinh ra sau), nên phải dùng 'on'
+            $('body').on('click', '.pagination a', function (e) {
+                e.preventDefault(); // Chặn link gốc
+                var url = $(this).attr('href'); // Lấy link: /Product?page=2...
+
+                if (url) {
+                           var data = $('#filterForm').serialize();
+        loadProducts(url, data);
+
+                }
+            });
+        });
+    </script>
+}

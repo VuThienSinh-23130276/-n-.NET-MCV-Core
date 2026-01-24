@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<Do_An_Net_CuoiKy.Models.Product>
+@{
     ViewData["Title"] = "Trang Chủ";
 }
 
@@ -36,29 +37,32 @@
                     <i class="fas fa-bone"></i>
                     <h5>Thức Ăn</h5>
                     <p class="text-muted">Thức ăn dinh dưỡng</p>
-                </div>
+                    </div>
+                </a>
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="category-card">
                     <i class="fas fa-baseball-ball"></i>
                     <h5>Đồ Chơi</h5>
                     <p class="text-muted">Đồ chơi vui nhộn</p>
-                </div>
+                    </div>
+                </a>
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="category-card">
                     <i class="fas fa-tshirt"></i>
-                    <h5>Phụ Kiện</h5>
+                        <h5>Phụ Kiện</h5>
                     <p class="text-muted">Phụ kiện thời trang</p>
-                </div>
+                    </div>
+                </a>
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="category-card">
                     <i class="fas fa-spa"></i>
                     <h5>Chăm Sóc</h5>
                     <p class="text-muted">Sản phẩm chăm sóc</p>
-                </div>
-            </div>
+        </div>
+    </div>
         </div>
     </div>
 </section>
@@ -70,8 +74,11 @@
             <h2>Sản Phẩm Nổi Bật</h2>
             <p>Những sản phẩm được yêu thích nhất</p>
         </div>
+
         <div class="row g-4">
-            <div class="col-lg-3 col-md-4 col-sm-6">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6">
                 <div class="card product-card">
                     <span class="badge bg-danger position-absolute top-0 start-0 m-2">-20%</span>
                     <img src="https://via.placeholder.com/300x300?text=Product+1" class="card-img-top" alt="Sản phẩm 1">
@@ -100,7 +107,7 @@
             </div>
             <div class="col-lg-3 col-md-4 col-sm-6">
                 <div class="card product-card">
-                    <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
+                            <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
                     <img src="https://via.placeholder.com/300x300?text=Product+2" class="card-img-top" alt="Sản phẩm 2">
                     <div class="card-body">
                         <div class="rating">
@@ -148,7 +155,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+                        </div>
             <div class="col-lg-3 col-md-4 col-sm-6">
                 <div class="card product-card">
                     <span class="badge bg-primary position-absolute top-0 start-0 m-2">Hot</span>
@@ -158,23 +165,24 @@
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
                             <i class="fas fa-star-half-alt"></i>
                             <span class="ms-1">(4.5)</span>
-                        </div>
+                            </div>
                         <h5 class="card-title">Sữa Tắm Cho Chó</h5>
                         <div class="price">
                             120.000đ
-                        </div>
+                            </div>
                         <div class="d-grid gap-2">
                             <button class="btn btn-primary">
                                 <i class="fas fa-shopping-cart me-2"></i>Thêm Vào Giỏ
-                            </button>
+                                </button>
                             <a href="@Url.Action("Details", "Product", new { id = 4 })" class="btn btn-outline-primary">Xem Chi Tiết</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
         </div>
         <div class="text-center mt-4">
             <a href="@Url.Action("Index", "Product")" class="btn btn-primary btn-lg">

@@ -8,6 +8,8 @@ builder.Services.AddControllersWithViews();
 
 // Add DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Đăng ký dịch vụ Database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
