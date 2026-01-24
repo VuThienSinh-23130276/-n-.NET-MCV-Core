@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Do_An_Net_CuoiKy.Models;
-using Do_An_Net_CuoiKy.Data; // Quan trọng: Để dùng được ApplicationDbContext
-using System.Diagnostics;
+using Do_An_Net_CuoiKy.Data;
 using Do_An_Net_CuoiKy.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace Do_An_Net_CuoiKy.Controllers
 {
@@ -24,7 +22,13 @@ namespace Do_An_Net_CuoiKy.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var sanPhamNoiBat = _context.Products
+                .AsNoTracking()
+                .OrderByDescending(p => p.Id)
+                .Take(8)
+                .ToList();
+
+            return View(sanPhamNoiBat);
         }
 
         public IActionResult Privacy()

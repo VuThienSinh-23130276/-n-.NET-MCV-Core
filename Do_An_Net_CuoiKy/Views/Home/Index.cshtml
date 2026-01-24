@@ -1,4 +1,4 @@
-﻿@model List<Do_An_Net_CuoiKy.Models.Product>
+@model List<Do_An_Net_CuoiKy.Models.Product>
 @{
     ViewData["Title"] = "Trang Chủ";
 }
@@ -18,7 +18,7 @@
                 </a>
             </div>
             <div class="col-md-6 text-center">
-                <img src="https://via.placeholder.com/600x400?text=Pet+Shop+Hero" alt="Pet Shop" class="img-fluid rounded">
+                <img src="~/products/dog/sp1.jpg" alt="Pet Shop" class="img-fluid rounded">
             </div>
         </div>
     </div>
@@ -76,114 +76,72 @@
         </div>
 
         <div class="row g-4">
-            @foreach (var item in Model)
+            @if (Model != null && Model.Any())
             {
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="card product-card">
-                    <span class="badge bg-danger position-absolute top-0 start-0 m-2">-20%</span>
-                    <img src="https://via.placeholder.com/300x300?text=Product+1" class="card-img-top" alt="Sản phẩm 1">
-                    <div class="card-body">
-                        <div class="rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span class="ms-1">(4.5)</span>
-                        </div>
-                        <h5 class="card-title">Thức Ăn Khô Cho Chó</h5>
-                        <div class="price">
-                            250.000đ
-                            <span class="old-price">300.000đ</span>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-shopping-cart me-2"></i>Thêm Vào Giỏ
-                            </button>
-                            <a href="@Url.Action("Details", "Product", new { id = 1 })" class="btn btn-outline-primary">Xem Chi Tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="card product-card">
-                            <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
-                    <img src="https://via.placeholder.com/300x300?text=Product+2" class="card-img-top" alt="Sản phẩm 2">
-                    <div class="card-body">
-                        <div class="rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                            <span class="ms-1">(4.0)</span>
-                        </div>
-                        <h5 class="card-title">Đồ Chơi Xương Gặm</h5>
-                        <div class="price">
-                            150.000đ
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-shopping-cart me-2"></i>Thêm Vào Giỏ
-                            </button>
-                            <a href="@Url.Action("Details", "Product", new { id = 2 })" class="btn btn-outline-primary">Xem Chi Tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="card product-card">
-                    <img src="https://via.placeholder.com/300x300?text=Product+3" class="card-img-top" alt="Sản phẩm 3">
-                    <div class="card-body">
-                        <div class="rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="ms-1">(5.0)</span>
-                        </div>
-                        <h5 class="card-title">Vòng Cổ Thời Trang</h5>
-                        <div class="price">
-                            180.000đ
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-shopping-cart me-2"></i>Thêm Vào Giỏ
-                            </button>
-                            <a href="@Url.Action("Details", "Product", new { id = 3 })" class="btn btn-outline-primary">Xem Chi Tiết</a>
-                        </div>
-                    </div>
-                </div>
-                        </div>
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="card product-card">
-                    <span class="badge bg-primary position-absolute top-0 start-0 m-2">Hot</span>
-                    <img src="https://via.placeholder.com/300x300?text=Product+4" class="card-img-top" alt="Sản phẩm 4">
-                    <div class="card-body">
-                        <div class="rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span class="ms-1">(4.5)</span>
-                            </div>
-                        <h5 class="card-title">Sữa Tắm Cho Chó</h5>
-                        <div class="price">
-                            120.000đ
-                            </div>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-shopping-cart me-2"></i>Thêm Vào Giỏ
-                                </button>
-                            <a href="@Url.Action("Details", "Product", new { id = 4 })" class="btn btn-outline-primary">Xem Chi Tiết</a>
+                @foreach (var item in Model)
+                {
+                    var fallbackImageUrl = Url.Content("~/logo.png");
+                    var imageUrl = string.IsNullOrWhiteSpace(item.ImageUrl)
+                        ? fallbackImageUrl
+                        : item.ImageUrl.Trim().Replace("\\", "/");
+                    if (!string.IsNullOrWhiteSpace(imageUrl) &&
+                        !imageUrl.StartsWith("http://") &&
+                        !imageUrl.StartsWith("https://") &&
+                        !imageUrl.StartsWith("/"))
+                    {
+                        if (imageUrl.StartsWith("~/"))
+                        {
+                            imageUrl = Url.Content(imageUrl);
+                        }
+                        else
+                        {
+                            imageUrl = "/" + imageUrl.TrimStart('/');
+                        }
+                    }
+
+                    var hasDiscount = item.OldPrice.HasValue && item.OldPrice.Value > item.Price;
+
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="card product-card h-100">
+                            @if (hasDiscount)
+                            {
+                                <span class="badge bg-danger position-absolute top-0 start-0 m-2">-@((int)((item.OldPrice!.Value - item.Price) / item.OldPrice.Value * 100))%</span>
+                            }
+                            <img src="@imageUrl" class="card-img-top" alt="@item.Name" style="height: 250px; object-fit: cover;" onerror="this.src='@fallbackImageUrl'">
+                            <div class="card-body d-flex flex-column">
+                                <div class="rating mb-2">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= Math.Round(item.Rating)) { <i class="fas fa-star text-warning"></i> }
+                                        else { <i class="far fa-star text-warning"></i> }
+                                    }
+                                    <span class="ms-1">(@item.Rating)</span>
+                                </div>
+                                <h5 class="card-title text-truncate">@item.Name</h5>
+                                <div class="price mb-2">
+                                    <span class="fw-bold text-danger fs-5">@item.Price.ToString("#,##0")đ</span>
+                                    @if (hasDiscount)
+                                    {
+                                        <span class="old-price ms-2">@item.OldPrice!.Value.ToString("#,##0")đ</span>
+                                    }
+                                </div>
+                                <div class="d-grid gap-2 mt-auto">
+                                    <button class="btn btn-primary">
+                                        <i class="fas fa-shopping-cart me-2"></i>Thêm Vào Giỏ
+                                    </button>
+                                    <a href="@Url.Action("Details", "Product", new { id = item.Id })" class="btn btn-outline-primary">Xem Chi Tiết</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-warning w-100 text-center">Không có sản phẩm nổi bật.</div>
             }
         </div>
+
         <div class="text-center mt-4">
             <a href="@Url.Action("Index", "Product")" class="btn btn-primary btn-lg">
                 Xem Tất Cả Sản Phẩm <i class="fas fa-arrow-right ms-2"></i>

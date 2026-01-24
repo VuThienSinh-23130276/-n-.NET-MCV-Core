@@ -1,5 +1,10 @@
+@model List<Do_An_Net_CuoiKy.Models.Cart>
 @{
     ViewData["Title"] = "Giỏ Hàng";
+    var subtotal = Model?.Where(c => c.Product != null).Sum(c => c.Product!.Price * c.Quantity) ?? 0m;
+    var shippingFee = 0m;
+    var discount = 0m;
+    var total = subtotal + shippingFee - discount;
 }
 
 <!-- Breadcrumb -->
@@ -16,104 +21,76 @@
 <section class="py-4">
     <div class="container">
         <h2 class="mb-4"><i class="fas fa-shopping-cart me-2"></i>Giỏ Hàng Của Bạn</h2>
-        
+
         <div class="row">
             <!-- Cart Items -->
             <div class="col-md-8">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <!-- Cart Item 1 -->
-                        <div class="cart-item">
-                            <div class="row align-items-center">
-                                <div class="col-md-2">
-                                    <img src="https://via.placeholder.com/100x100?text=Product+1" class="img-fluid rounded" alt="Sản phẩm">
-                                </div>
-                                <div class="col-md-4">
-                                    <h6 class="mb-1">Thức Ăn Khô Cho Chó</h6>
-                                    <small class="text-muted">Mã SP: SP001</small>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="input-group">
-                                        <button class="btn btn-outline-secondary btn-sm" type="button">-</button>
-                                        <input type="number" class="form-control form-control-sm text-center" value="2" min="1">
-                                        <button class="btn btn-outline-secondary btn-sm" type="button">+</button>
+                        @if (Model == null || !Model.Any())
+                        {
+                            <div class="alert alert-info mb-0">Giỏ hàng của bạn đang trống.</div>
+                        }
+                        else
+                        {
+                            @foreach (var item in Model)
+                            {
+                                var fallbackImageUrl = Url.Content("~/logo.png");
+                                var imageUrl = string.IsNullOrWhiteSpace(item.Product?.ImageUrl)
+                                    ? fallbackImageUrl
+                                    : item.Product!.ImageUrl.Trim().Replace("\\", "/");
+                                if (!string.IsNullOrWhiteSpace(imageUrl) &&
+                                    !imageUrl.StartsWith("http://") &&
+                                    !imageUrl.StartsWith("https://") &&
+                                    !imageUrl.StartsWith("/"))
+                                {
+                                    if (imageUrl.StartsWith("~/"))
+                                    {
+                                        imageUrl = Url.Content(imageUrl);
+                                    }
+                                    else
+                                    {
+                                        imageUrl = "/" + imageUrl.TrimStart('/');
+                                    }
+                                }
+
+                                <div class="cart-item">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-2">
+                                            <img src="@imageUrl" class="img-fluid rounded" alt="@item.Product?.Name" onerror="this.src='@fallbackImageUrl'">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h6 class="mb-1">@item.Product?.Name</h6>
+                                            <small class="text-muted">Mã SP: #@item.ProductId</small>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="input-group">
+                                                <button class="btn btn-outline-secondary btn-sm" type="button">-</button>
+                                                <input type="number" class="form-control form-control-sm text-center" value="@item.Quantity" min="1">
+                                                <button class="btn btn-outline-secondary btn-sm" type="button">+</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 text-center">
+                                            <strong class="text-danger">@((item.Product?.Price ?? 0m).ToString("#,##0"))đ</strong>
+                                        </div>
+                                        <div class="col-md-2 text-end">
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-2 text-center">
-                                    <strong class="text-danger">250.000đ</strong>
-                                </div>
-                                <div class="col-md-2 text-end">
-                                    <button class="btn btn-sm btn-outline-danger">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                            }
 
-                        <!-- Cart Item 2 -->
-                        <div class="cart-item">
-                            <div class="row align-items-center">
-                                <div class="col-md-2">
-                                    <img src="https://via.placeholder.com/100x100?text=Product+2" class="img-fluid rounded" alt="Sản phẩm">
-                                </div>
-                                <div class="col-md-4">
-                                    <h6 class="mb-1">Đồ Chơi Xương Gặm</h6>
-                                    <small class="text-muted">Mã SP: SP002</small>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="input-group">
-                                        <button class="btn btn-outline-secondary btn-sm" type="button">-</button>
-                                        <input type="number" class="form-control form-control-sm text-center" value="1" min="1">
-                                        <button class="btn btn-outline-secondary btn-sm" type="button">+</button>
-                                    </div>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <strong class="text-danger">150.000đ</strong>
-                                </div>
-                                <div class="col-md-2 text-end">
-                                    <button class="btn btn-sm btn-outline-danger">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
+                            <div class="mt-3 pt-3 border-top">
+                                <a href="@Url.Action("Index", "Product")" class="btn btn-outline-primary">
+                                    <i class="fas fa-arrow-left me-2"></i>Tiếp Tục Mua Sắm
+                                </a>
+                                <button class="btn btn-outline-danger float-end">
+                                    <i class="fas fa-trash-alt me-2"></i>Xóa Tất Cả
+                                </button>
                             </div>
-                        </div>
-
-                        <!-- Cart Item 3 -->
-                        <div class="cart-item">
-                            <div class="row align-items-center">
-                                <div class="col-md-2">
-                                    <img src="https://via.placeholder.com/100x100?text=Product+3" class="img-fluid rounded" alt="Sản phẩm">
-                                </div>
-                                <div class="col-md-4">
-                                    <h6 class="mb-1">Vòng Cổ Thời Trang</h6>
-                                    <small class="text-muted">Mã SP: SP003</small>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="input-group">
-                                        <button class="btn btn-outline-secondary btn-sm" type="button">-</button>
-                                        <input type="number" class="form-control form-control-sm text-center" value="1" min="1">
-                                        <button class="btn btn-outline-secondary btn-sm" type="button">+</button>
-                                    </div>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <strong class="text-danger">180.000đ</strong>
-                                </div>
-                                <div class="col-md-2 text-end">
-                                    <button class="btn btn-sm btn-outline-danger">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-3 pt-3 border-top">
-                            <a href="@Url.Action("Index", "Product")" class="btn btn-outline-primary">
-                                <i class="fas fa-arrow-left me-2"></i>Tiếp Tục Mua Sắm
-                            </a>
-                            <button class="btn btn-outline-danger float-end">
-                                <i class="fas fa-trash-alt me-2"></i>Xóa Tất Cả
-                            </button>
-                        </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -127,23 +104,23 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-2">
                             <span>Tạm tính:</span>
-                            <span>580.000đ</span>
+                            <span>@subtotal.ToString("#,##0")đ</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Phí vận chuyển:</span>
-                            <span class="text-success">Miễn phí</span>
+                            <span class="text-success">@((shippingFee == 0) ? "Miễn phí" : $"{shippingFee:#,##0}đ")</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Giảm giá:</span>
-                            <span class="text-danger">-50.000đ</span>
+                            <span class="text-danger">-@discount.ToString("#,##0")đ</span>
                         </div>
                         <hr>
                         <div class="d-flex justify-content-between mb-3">
                             <strong>Tổng cộng:</strong>
-                            <strong class="text-danger h5 mb-0">530.000đ</strong>
+                            <strong class="text-danger h5 mb-0">@total.ToString("#,##0")đ</strong>
                         </div>
                         <div class="d-grid gap-2">
-                            <a asp-controller="Checkout" asp-action="Index" class="btn btn-primary btn-lg">
+                            <a asp-controller="Checkout" asp-action="Index" class="btn btn-primary btn-lg @(Model == null || !Model.Any() ? "disabled" : "")">
                                 <i class="fas fa-credit-card me-2"></i>Thanh Toán
                             </a>
                             <button class="btn btn-outline-primary">

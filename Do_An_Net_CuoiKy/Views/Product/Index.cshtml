@@ -112,8 +112,8 @@
                         <label class="me-2">Sắp xếp:</label>
                         <select name="sortOrder" class="form-select form-select-sm" style="width: auto;">
                             <option value="">Mặc định</option>
-                            <option value="price_asc" @(ViewBag.CurrentSort == "price_asc" ? "selected" : "")>Giá: Thấp đến Cao</option>
-                            <option value="price_desc" @(ViewBag.CurrentSort == "price_desc" ? "selected" : "")>Giá: Cao đến Thấp</option>
+                            <option value="price_asc" selected="@(ViewBag.CurrentSort == "price_asc" ? "selected" : null)">Giá: Thấp đến Cao</option>
+                            <option value="price_desc" selected="@(ViewBag.CurrentSort == "price_desc" ? "selected" : null)">Giá: Cao đến Thấp</option>
                         </select>
                     </div>
                 </div>

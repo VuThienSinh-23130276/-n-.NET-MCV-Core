@@ -1,6 +1,28 @@
+@model Do_An_Net_CuoiKy.Models.Product
 @{
-    ViewData["Title"] = "Chi Tiết Sản Phẩm";
-    var productId = ViewBag.ProductId ?? 1;
+    ViewData["Title"] = Model.Name;
+    var fallbackImageUrl = Url.Content("~/logo.png");
+    var imageUrl = string.IsNullOrWhiteSpace(Model.ImageUrl)
+        ? fallbackImageUrl
+        : Model.ImageUrl.Trim().Replace("\\", "/");
+    if (!string.IsNullOrWhiteSpace(imageUrl) &&
+        !imageUrl.StartsWith("http://") &&
+        !imageUrl.StartsWith("https://") &&
+        !imageUrl.StartsWith("/"))
+    {
+        if (imageUrl.StartsWith("~/"))
+        {
+            imageUrl = Url.Content(imageUrl);
+        }
+        else
+        {
+            imageUrl = "/" + imageUrl.TrimStart('/');
+        }
+    }
+    var hasDiscount = Model.OldPrice.HasValue && Model.OldPrice.Value > Model.Price;
+    var discountPercent = hasDiscount
+        ? (int)Math.Round((Model.OldPrice.Value - Model.Price) / Model.OldPrice.Value * 100)
+        : 0;
 }
 
 <!-- Breadcrumb -->
@@ -21,47 +43,54 @@
             <!-- Product Images -->
             <div class="col-md-6">
                 <div class="mb-3">
-                    <img src="https://via.placeholder.com/600x600?text=Product+@productId" class="img-fluid rounded shadow" alt="Sản phẩm @productId" id="mainImage">
+                    <img src="@imageUrl" class="img-fluid rounded shadow" alt="@Model.Name" id="mainImage" onerror="this.src='@fallbackImageUrl'">
                 </div>
                 <div class="row g-2">
                     <div class="col-3">
-                        <img src="https://via.placeholder.com/150x150?text=1" class="img-fluid rounded border cursor-pointer" onclick="changeImage(this.src)" alt="Thumbnail 1">
+                        <img src="@imageUrl" class="img-fluid rounded border cursor-pointer" onclick="changeImage(this.src)" alt="@Model.Name">
                     </div>
                     <div class="col-3">
-                        <img src="https://via.placeholder.com/150x150?text=2" class="img-fluid rounded border cursor-pointer" onclick="changeImage(this.src)" alt="Thumbnail 2">
+                        <img src="@imageUrl" class="img-fluid rounded border cursor-pointer" onclick="changeImage(this.src)" alt="@Model.Name">
                     </div>
                     <div class="col-3">
-                        <img src="https://via.placeholder.com/150x150?text=3" class="img-fluid rounded border cursor-pointer" onclick="changeImage(this.src)" alt="Thumbnail 3">
+                        <img src="@imageUrl" class="img-fluid rounded border cursor-pointer" onclick="changeImage(this.src)" alt="@Model.Name">
                     </div>
                     <div class="col-3">
-                        <img src="https://via.placeholder.com/150x150?text=4" class="img-fluid rounded border cursor-pointer" onclick="changeImage(this.src)" alt="Thumbnail 4">
+                        <img src="@imageUrl" class="img-fluid rounded border cursor-pointer" onclick="changeImage(this.src)" alt="@Model.Name">
                     </div>
                 </div>
             </div>
 
             <!-- Product Info -->
             <div class="col-md-6">
-                <h1 class="mb-3">Sản Phẩm @productId</h1>
+                <h1 class="mb-3">@Model.Name</h1>
                 <div class="rating mb-3">
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="fas fa-star text-warning"></i>
-                    <i class="fas fa-star-half-alt text-warning"></i>
-                    <span class="ms-2">(4.5) - 120 đánh giá</span>
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= Math.Round(Model.Rating)) { <i class="fas fa-star text-warning"></i> }
+                        else { <i class="far fa-star text-warning"></i> }
+                    }
+                    <span class="ms-2">(@Model.Rating) - @Model.ReviewCount đánh giá</span>
                 </div>
                 <div class="price mb-4">
-                    <span class="h2 text-danger fw-bold">@((productId * 50000).ToString("N0"))đ</span>
-                    <span class="text-muted text-decoration-line-through ms-2">@((productId * 62500).ToString("N0"))đ</span>
-                    <span class="badge bg-danger ms-2">-20%</span>
+                    <span class="h2 text-danger fw-bold">@Model.Price.ToString("#,##0")đ</span>
+                    @if (hasDiscount)
+                    {
+                        <span class="text-muted text-decoration-line-through ms-2">@Model.OldPrice!.Value.ToString("#,##0")đ</span>
+                        <span class="badge bg-danger ms-2">-@discountPercent%</span>
+                    }
                 </div>
 
                 <div class="mb-4">
                     <h5>Mô Tả Sản Phẩm</h5>
-                    <p class="text-muted">
-                        Sản phẩm chất lượng cao, được làm từ nguyên liệu tự nhiên, an toàn cho thú cưng của bạn. 
-                        Sản phẩm được nhập khẩu và kiểm định chất lượng nghiêm ngặt.
-                    </p>
+                    @if (!string.IsNullOrWhiteSpace(Model.Description))
+                    {
+                        <div class="text-muted">@Html.Raw(Model.Description)</div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Chưa có mô tả cho sản phẩm này.</p>
+                    }
                 </div>
 
                 <div class="mb-4">
@@ -124,32 +153,33 @@
                 <div class="tab-content p-4 border border-top-0 rounded-bottom" id="productTabsContent">
                     <div class="tab-pane fade show active" id="description" role="tabpanel">
                         <h5>Chi Tiết Sản Phẩm</h5>
-                        <p>Sản phẩm được thiết kế đặc biệt để đáp ứng nhu cầu của thú cưng của bạn. Với chất liệu cao cấp và quy trình sản xuất nghiêm ngặt, sản phẩm đảm bảo an toàn và hiệu quả.</p>
-                        <ul>
-                            <li>Chất liệu tự nhiên, an toàn</li>
-                            <li>Được kiểm định chất lượng</li>
-                            <li>Phù hợp với mọi loại thú cưng</li>
-                            <li>Dễ sử dụng và bảo quản</li>
-                        </ul>
+                        @if (!string.IsNullOrWhiteSpace(Model.Description))
+                        {
+                            <div>@Html.Raw(Model.Description)</div>
+                        }
+                        else
+                        {
+                            <p class="text-muted">Chưa có mô tả chi tiết.</p>
+                        }
                     </div>
                     <div class="tab-pane fade" id="specs" role="tabpanel">
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <th>Thương Hiệu</th>
-                                    <td>PetShop Premium</td>
+                                    <th>Danh Mục</th>
+                                    <td>@(Model.Category?.Name ?? "Chưa cập nhật")</td>
                                 </tr>
                                 <tr>
-                                    <th>Xuất Xứ</th>
-                                    <td>Việt Nam</td>
+                                    <th>Tồn Kho</th>
+                                    <td>@Model.Stock</td>
                                 </tr>
                                 <tr>
-                                    <th>Trọng Lượng</th>
-                                    <td>500g</td>
+                                    <th>Đánh Giá</th>
+                                    <td>@Model.Rating</td>
                                 </tr>
                                 <tr>
-                                    <th>Kích Thước</th>
-                                    <td>20 x 15 x 10 cm</td>
+                                    <th>Số Lượt Đánh Giá</th>
+                                    <td>@Model.ReviewCount</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -159,46 +189,19 @@
                             <h5>Đánh Giá Từ Khách Hàng</h5>
                             <div class="d-flex align-items-center mb-3">
                                 <div class="me-3">
-                                    <h2 class="mb-0">4.5</h2>
+                                    <h2 class="mb-0">@Model.Rating</h2>
                                     <div class="rating">
-                                        <i class="fas fa-star text-warning"></i>
-                                        <i class="fas fa-star text-warning"></i>
-                                        <i class="fas fa-star text-warning"></i>
-                                        <i class="fas fa-star text-warning"></i>
-                                        <i class="fas fa-star-half-alt text-warning"></i>
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= Math.Round(Model.Rating)) { <i class="fas fa-star text-warning"></i> }
+                                            else { <i class="far fa-star text-warning"></i> }
+                                        }
                                     </div>
-                                    <small class="text-muted">120 đánh giá</small>
+                                    <small class="text-muted">@Model.ReviewCount đánh giá</small>
                                 </div>
                             </div>
                         </div>
-                        <div class="review-item border-bottom pb-3 mb-3">
-                            <div class="d-flex justify-content-between mb-2">
-                                <strong>Nguyễn Văn A</strong>
-                                <div class="rating">
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                </div>
-                            </div>
-                            <p class="text-muted mb-0">Sản phẩm rất tốt, thú cưng của tôi rất thích!</p>
-                            <small class="text-muted">2 ngày trước</small>
-                        </div>
-                        <div class="review-item border-bottom pb-3 mb-3">
-                            <div class="d-flex justify-content-between mb-2">
-                                <strong>Trần Thị B</strong>
-                                <div class="rating">
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="far fa-star text-warning"></i>
-                                </div>
-                            </div>
-                            <p class="text-muted mb-0">Chất lượng tốt, giá cả hợp lý.</p>
-                            <small class="text-muted">5 ngày trước</small>
-                        </div>
+                        <div class="alert alert-info mb-0">Chưa có đánh giá cho sản phẩm này.</div>
                     </div>
                 </div>
             </div>

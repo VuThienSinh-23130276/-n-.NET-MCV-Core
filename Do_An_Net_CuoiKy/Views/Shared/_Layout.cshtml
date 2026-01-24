@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
@@ -48,12 +48,22 @@
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                                 Sản Phẩm
                             </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="Product" asp-action="Index">Tất Cả Sản Phẩm</a></li>
-                                <li><a class="dropdown-item" href="#">Thức Ăn</a></li>
-                                <li><a class="dropdown-item" href="#">Đồ Chơi</a></li>
-                                <li><a class="dropdown-item" href="#">Phụ Kiện</a></li>
-                                <li><a class="dropdown-item" href="#">Chăm Sóc</a></li>
+            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="Index">Tất Cả Sản Phẩm</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="Index" asp-route-categoryIds="1">Thức Ăn</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="Index" asp-route-categoryIds="2">Đồ Chơi</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="Index" asp-route-categoryIds="3">Phụ Kiện</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="Index" asp-route-categoryIds="4">Chăm Sóc</a>
+                                </li>
                             </ul>
                         </li>
                         <li class="nav-item">
@@ -64,9 +74,15 @@
                         </li>
                     </ul>
                     <div class="d-flex align-items-center">
-                        <form class="d-flex me-3" role="search">
-                            <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
-                            <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i></button>
+                        <form action="@Url.Action("Index", "Product")" method="get" class="d-flex me-3" role="search">
+                            <input class="form-control me-2"
+                                   type="search"
+                                   name="searchString"
+                                   placeholder="Tìm kiếm..."
+                                   value="@ViewBag.CurrentSearch">
+                            <button class="btn btn-outline-primary" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
                         </form>
                         <div class="d-flex align-items-center">
                             <a href="@Url.Action("Index", "Cart")" class="btn btn-outline-primary me-2 position-relative">
@@ -154,7 +170,7 @@
                     <p class="mb-0">&copy; 2026 Shop Thú Cưng. Tất cả quyền được bảo lưu.</p>
                 </div>
                 <div class="col-md-6 text-end">
-                    <img src="https://via.placeholder.com/200x30?text=Payment+Methods" alt="Payment Methods" class="img-fluid">
+                    <small class="text-white-50">Thanh toán: COD, chuyển khoản, ví điện tử</small>
                 </div>
             </div>
         </div>
