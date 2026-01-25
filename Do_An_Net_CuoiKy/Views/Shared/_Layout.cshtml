@@ -73,18 +73,67 @@
                                 <i class="fas fa-shopping-cart"></i>
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
                             </a>
-                            <div class="dropdown">
-                                <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-user"></i> Tài Khoản
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Login">Đăng Nhập</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Register">Đăng Ký</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="#">Tài Khoản Của Tôi</a></li>
-                                    <li><a class="dropdown-item" href="#">Đơn Hàng</a></li>
-                                </ul>
-                            </div>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-user"></i> 
+                                    </button>
+
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" href="#">
+                                                <i class="fas fa-user-circle me-2"></i>Tài Khoản Của Tôi
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#">
+                                                <i class="fas fa-box me-2"></i>Đơn Hàng
+                                            </a>
+                                        </li>
+
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a class="dropdown-item text-danger" asp-controller="Admin" asp-action="Index">
+                                                    <i class="fas fa-cog me-2"></i>Trang Admin
+                                                </a>
+                                            </li>
+                                        }
+
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                                <button type="submit" class="dropdown-item text-danger">
+                                                    <i class="fas fa-sign-out-alt me-2"></i>Đăng Xuất
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-user"></i> Tài Khoản
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Account" asp-action="Login">
+                                                <i class="fas fa-sign-in-alt me-2"></i>Đăng Nhập
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Account" asp-action="Register">
+                                                <i class="fas fa-user-plus me-2"></i>Đăng Ký
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            }
+
                         </div>
                     </div>
                 </div>
