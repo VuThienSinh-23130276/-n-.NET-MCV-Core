@@ -17,26 +17,28 @@ namespace Do_An_Net_CuoiKy.Areas.Admin.Controllers
             _env = env;
         }
 
-        // GET: /Admin/Categories
+        // =======================
+        // INDEX
+        // =======================
         public async Task<IActionResult> Index()
         {
             var categories = await _context.Categories
+                .Include(c => c.Products)
                 .OrderByDescending(c => c.Id)
                 .ToListAsync();
 
             return View(categories);
         }
 
-
-        // POST: /Admin/Categories/CreateAjax
+        // =======================
+        // CREATE
+        // =======================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAjax(
-        [FromForm] Category category,
-        [FromForm] IFormFile? imageFile)
+        public async Task<IActionResult> CreateAjax([FromForm] Category category, [FromForm] IFormFile? imageFile)
         {
             if (string.IsNullOrWhiteSpace(category.Name))
-                return Json(new { success = false, message = "Tên danh mục trống" });
+                return Json(new { success = false, message = "Tên danh mục không được trống" });
 
             if (imageFile != null && imageFile.Length > 0)
             {
@@ -58,25 +60,38 @@ namespace Do_An_Net_CuoiKy.Areas.Admin.Controllers
             return Json(new { success = true });
         }
 
-        // GET: Admin/Categories/Get/5
+        // =======================
+        // GET ONE CATEGORY
+        // =======================
+        [HttpGet]
         public async Task<IActionResult> Get(int id)
         {
             var category = await _context.Categories.FindAsync(id);
             if (category == null) return NotFound();
 
-            return Json(category);
+            return Json(new
+            {
+                category.Id,
+                category.Name,
+                category.Description,
+                category.ImageUrl,
+                category.IsActive
+            });
         }
-        // POST: Admin/Categories/EditAjax
 
+        // =======================
+        // EDIT
+        // =======================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditAjax(
-        [FromForm] Category category,
-        [FromForm] IFormFile? imageFile)
+        public async Task<IActionResult> EditAjax([FromForm] Category category, [FromForm] IFormFile? imageFile)
         {
             var db = await _context.Categories.FindAsync(category.Id);
             if (db == null)
-                return Json(new { success = false });
+                return Json(new { success = false, message = "Không tìm thấy danh mục" });
+
+            if (string.IsNullOrWhiteSpace(category.Name))
+                return Json(new { success = false, message = "Tên danh mục không được trống" });
 
             db.Name = category.Name;
             db.Description = category.Description;
@@ -86,6 +101,14 @@ namespace Do_An_Net_CuoiKy.Areas.Admin.Controllers
             {
                 var folder = Path.Combine(_env.WebRootPath, "upload/categories");
                 Directory.CreateDirectory(folder);
+
+                // Xóa ảnh cũ
+                if (!string.IsNullOrEmpty(db.ImageUrl))
+                {
+                    var oldPath = Path.Combine(_env.WebRootPath, db.ImageUrl.TrimStart('/'));
+                    if (System.IO.File.Exists(oldPath))
+                        System.IO.File.Delete(oldPath);
+                }
 
                 var fileName = Guid.NewGuid() + Path.GetExtension(imageFile.FileName);
                 var path = Path.Combine(folder, fileName);
@@ -100,19 +123,38 @@ namespace Do_An_Net_CuoiKy.Areas.Admin.Controllers
             return Json(new { success = true });
         }
 
-        // POST: Admin/Categories/DeleteAjax/5
+        // =======================
+        // DELETE
+        // =======================
         [HttpPost]
         public async Task<IActionResult> DeleteAjax(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _context.Categories
+                .Include(c => c.Products)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
             if (category == null)
-                return Json(new { success = false });
+                return Json(new { success = false, message = "Không tìm thấy danh mục" });
+
+            if (category.Products.Any())
+                return Json(new { success = false, message = "Danh mục đang chứa sản phẩm, không thể xóa!" });
+
+            if (!string.IsNullOrEmpty(category.ImageUrl))
+            {
+                var path = Path.Combine(_env.WebRootPath, category.ImageUrl.TrimStart('/'));
+                if (System.IO.File.Exists(path))
+                    System.IO.File.Delete(path);
+            }
 
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
 
             return Json(new { success = true });
         }
+
+        // =======================
+        // TOGGLE ACTIVE
+        // =======================
         [HttpPost]
         public async Task<IActionResult> ToggleActive(int id)
         {
@@ -125,6 +167,10 @@ namespace Do_An_Net_CuoiKy.Areas.Admin.Controllers
 
             return Json(new { success = true, isActive = category.IsActive });
         }
+
+        // =======================
+        // GET ALL ACTIVE FOR DROPDOWN
+        // =======================
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

@@ -1,35 +1,67 @@
-﻿function openCreateModal() {
-    $('#categoryId').val('');
-    $('#categoryName').val('');
-    $('#categoryDescription').val('');
-    $('#categoryActive').prop('checked', true);
-    $('#previewImage').hide();
-    $('#categoryImage').val('');
+﻿// =======================
+// LẤY CSRF TOKEN
+// =======================
+function getToken() {
+    return $('input[name="__RequestVerificationToken"]').val();
+}
 
-    const modal = new bootstrap.Modal(
-        document.getElementById('categoryModal')
-    );
+// =======================
+// MỞ MODAL TẠO MỚI
+// =======================
+function openCreateModal() {
+    $('#modalTitle').text("Thêm danh mục");
+    $('#categoryForm')[0].reset();
+    $('#previewImage').hide();
+
+    // Không gửi Id khi tạo mới
+    $('#categoryId').removeAttr('name').val('');
+
+    const modal = new bootstrap.Modal(document.getElementById('categoryModal'));
     modal.show();
 }
 
-function saveCategory() {
+// =======================
+// MỞ MODAL CHỈNH SỬA
+// =======================
+function openEdit(id) {
+    $.get('/Admin/Categories/Get/' + id, function (data) {
+        $('#modalTitle').text("Chỉnh sửa danh mục");
 
-    const formData = new FormData();
-    formData.append('Id', $('#categoryId').val());
-    formData.append('Name', $('#categoryName').val());
-    formData.append('Description', $('#categoryDescription').val());
-    formData.append('IsActive', $('#categoryActive').is(':checked'));
+        // Gửi Id khi edit
+        $('#categoryId').attr('name', 'Id').val(data.id);
 
-    const image = $('#categoryImage')[0].files[0];
-    if (image) {
-        formData.append('imageFile', image);
-    }
+        $('#categoryName').val(data.name);
+        $('#categoryDescription').val(data.description);
+        $('#categoryActive').prop('checked', data.isActive);
+
+        if (data.imageUrl) {
+            $('#previewImage').attr('src', data.imageUrl).show();
+        } else {
+            $('#previewImage').hide();
+        }
+
+        $('#categoryImage').val('');
+        const modal = new bootstrap.Modal(document.getElementById('categoryModal'));
+        modal.show();
+    });
+}
+
+// =======================
+// SUBMIT FORM CREATE / EDIT
+// =======================
+$(document).on('submit', '#categoryForm', function (e) {
+    e.preventDefault();
+
+    let formData = new FormData(this);
+    let hasId = $('#categoryId').attr('name') === 'Id';
+    let url = hasId ? '/Admin/Categories/EditAjax' : '/Admin/Categories/CreateAjax';
 
     $.ajax({
-        url: $('#categoryId').val()
-            ? '/Admin/Categories/EditAjax'
-            : '/Admin/Categories/CreateAjax',
+        url: url,
         type: 'POST',
+        headers: {
+            'RequestVerificationToken': getToken()
+        },
         data: formData,
         processData: false,
         contentType: false,
@@ -37,65 +69,89 @@ function saveCategory() {
             if (res.success) {
                 location.reload();
             } else {
-                alert(res.message || 'Lỗi');
+                alert(res.message || "Có lỗi xảy ra");
             }
         },
         error: function () {
-            alert('Lỗi server');
+            alert("Lỗi server");
         }
     });
-}
+});
 
-// Preview ảnh khi chọn file
-$('#categoryImage').on('change', function () {
+// =======================
+// PREVIEW ẢNH
+// =======================
+$(document).on('change', '#categoryImage', function () {
     const file = this.files[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.onload = function (e) {
-        $('#previewImage')
-            .attr('src', e.target.result)
-            .show();
+        $('#previewImage').attr('src', e.target.result).show();
     };
     reader.readAsDataURL(file);
 });
 
-function openEdit(id) {
-    $.get('/Admin/Categories/Get/' + id, function (data) {
-        $('#categoryId').val(data.id);
-        $('#categoryName').val(data.name);
-        $('#categoryDescription').val(data.description);
-        $('#categoryActive').prop('checked', data.isActive);
-
-        if (data.imageUrl) {
-            $('#previewImage')
-                .attr('src', data.imageUrl)
-                .show();
-        } else {
-            $('#previewImage').hide();
-        }
-
-        $('#categoryImage').val('');
-
-        const modal = new bootstrap.Modal(
-            document.getElementById('categoryModal')
-        );
-        modal.show();
-    });
-}
-
+// =======================
+// XÓA DANH MỤC
+// =======================
 function deleteCategory(id) {
-    if (!confirm('Xóa danh mục?')) return;
+    if (!confirm("Bạn có chắc muốn xóa danh mục này?")) return;
 
-    $.post('/Admin/Categories/DeleteAjax/' + id, function (res) {
-        if (res.success) $('#row-' + id).remove();
+    $.ajax({
+        url: '/Admin/Categories/DeleteAjax',
+        type: 'POST',
+        headers: {
+            'RequestVerificationToken': getToken()
+        },
+        data: { id: id },
+        success: function (res) {
+            if (res.success) {
+                $('#row-' + id).fadeOut(300, function () {
+                    $(this).remove();
+                    updateCategorySTT(); // cập nhật lại STT
+                });
+            } else {
+                alert(res.message || "Không thể xóa");
+            }
+        },
+        error: function () {
+            alert("Lỗi server");
+        }
     });
 }
+
+// =======================
+// BẬT/TẮT TRẠNG THÁI
+// =======================
 function toggleActive(id, checkbox) {
-    $.post('/Admin/Categories/ToggleActive', { id }, function (res) {
-        if (!res.success) {
-            alert('Lỗi');
-            checkbox.checked = !checkbox.checked;
+    let oldValue = !checkbox.checked;
+
+    $.ajax({
+        url: '/Admin/Categories/ToggleActive',
+        type: 'POST',
+        headers: {
+            'RequestVerificationToken': getToken()
+        },
+        data: { id: id },
+        success: function (res) {
+            if (!res.success) {
+                checkbox.checked = oldValue;
+                alert("Không thể cập nhật trạng thái");
+            }
+        },
+        error: function () {
+            checkbox.checked = oldValue;
+            alert("Lỗi server");
         }
+    });
+}
+
+// =======================
+// CẬP NHẬT LẠI STT
+// =======================
+function updateCategorySTT() {
+    $("#categoryTable tbody tr").each(function (index) {
+        $(this).find(".stt").text(index + 1);
     });
 }

@@ -17,15 +17,14 @@ namespace Do_An_Net_CuoiKy.Areas.Admin.Controllers
             _env = env;
         }
 
-        // GET: Admin/Products
+        // ================= LIST =================
         public async Task<IActionResult> Index()
-        {   
+        {
             var products = await _context.Products
                 .Include(p => p.Category)
                 .OrderByDescending(p => p.Id)
                 .ToListAsync();
 
-            // Thống kê
             ViewBag.Total = products.Count;
             ViewBag.Active = products.Count(p => p.IsActive);
             ViewBag.LowStock = products.Count(p => p.Stock < 10);
@@ -34,13 +33,20 @@ namespace Do_An_Net_CuoiKy.Areas.Admin.Controllers
             return View(products);
         }
 
-
-        // POST: Admin/Products/CreateAjax
+        // ================= CREATE =================
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateAjax(Product product, IFormFile? imageFile)
         {
             if (!ModelState.IsValid)
-                return Json(new { success = false });
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                return Json(new { success = false, message = string.Join(" | ", errors) });
+            }
 
             if (imageFile != null && imageFile.Length > 0)
             {
@@ -57,27 +63,52 @@ namespace Do_An_Net_CuoiKy.Areas.Admin.Controllers
             }
 
             product.CreatedDate = DateTime.Now;
+
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
             return Json(new { success = true });
         }
 
-        // GET: Admin/Products/Get/5
+        // ================= GET BY ID =================
+        [HttpGet]
         public async Task<IActionResult> Get(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null) return NotFound();
+            var p = await _context.Products.FindAsync(id);
+            if (p == null) return NotFound();
 
-            return Json(product);
+            return Json(new
+            {
+                p.Id,
+                p.Name,
+                p.Description,
+                p.Price,
+                p.OldPrice,
+                p.CategoryId,
+                p.Stock,
+                p.IsActive,
+                p.ImageUrl
+            });
         }
 
-        // POST: Admin/Products/EditAjax
+        // ================= EDIT =================
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAjax(Product product, IFormFile? imageFile)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                return Json(new { success = false, message = string.Join(" | ", errors) });
+            }
+
             var db = await _context.Products.FindAsync(product.Id);
-            if (db == null) return Json(new { success = false });
+            if (db == null)
+                return Json(new { success = false, message = "Không tìm thấy sản phẩm" });
 
             db.Name = product.Name;
             db.Description = product.Description;
@@ -92,6 +123,14 @@ namespace Do_An_Net_CuoiKy.Areas.Admin.Controllers
                 var folder = Path.Combine(_env.WebRootPath, "upload/products");
                 Directory.CreateDirectory(folder);
 
+                // Xóa ảnh cũ
+                if (!string.IsNullOrEmpty(db.ImageUrl))
+                {
+                    var oldPath = Path.Combine(_env.WebRootPath, db.ImageUrl.TrimStart('/'));
+                    if (System.IO.File.Exists(oldPath))
+                        System.IO.File.Delete(oldPath);
+                }
+
                 var fileName = Guid.NewGuid() + Path.GetExtension(imageFile.FileName);
                 var path = Path.Combine(folder, fileName);
 
@@ -105,12 +144,28 @@ namespace Do_An_Net_CuoiKy.Areas.Admin.Controllers
             return Json(new { success = true });
         }
 
-        // POST: Admin/Products/DeleteAjax
+        // ================= DELETE =================
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteAjax(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null) return Json(new { success = false });
+            var product = await _context.Products
+                .Include(p => p.OrderDetails)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (product == null)
+                return Json(new { success = false });
+
+            if (product.OrderDetails.Any())
+                return Json(new { success = false, message = "Sản phẩm đã có trong đơn hàng, không thể xóa!" });
+
+            // Xóa ảnh
+            if (!string.IsNullOrEmpty(product.ImageUrl))
+            {
+                var path = Path.Combine(_env.WebRootPath, product.ImageUrl.TrimStart('/'));
+                if (System.IO.File.Exists(path))
+                    System.IO.File.Delete(path);
+            }
 
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
@@ -118,32 +173,31 @@ namespace Do_An_Net_CuoiKy.Areas.Admin.Controllers
             return Json(new { success = true });
         }
 
+        // ================= TOGGLE ACTIVE =================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleActive(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+                return Json(new { success = false });
+
+            product.IsActive = !product.IsActive;
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, isActive = product.IsActive });
+        }
+
+        // ================= LOAD CATEGORIES =================
         [HttpGet]
         public async Task<IActionResult> GetCategories()
         {
             var categories = await _context.Categories
                 .Where(c => c.IsActive)
-                .Select(c => new
-                {
-                    c.Id,
-                    c.Name
-                })
+                .Select(c => new { c.Id, c.Name })
                 .ToListAsync();
 
             return Json(categories);
         }
-
-        [HttpPost]
-        public async Task<IActionResult> ToggleActive(int id)
-        {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null) return NotFound();
-
-            product.IsActive = !product.IsActive;
-            await _context.SaveChangesAsync();
-
-            return Ok();
-        }
-
     }
 }

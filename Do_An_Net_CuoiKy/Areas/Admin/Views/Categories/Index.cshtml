@@ -1,12 +1,18 @@
 ﻿@model List<Do_An_Net_CuoiKy.Models.Category>
+
+@{
+    ViewData["Title"] = "Quản lý danh mục";
+}
+
 @Html.AntiForgeryToken()
+
 <div class="card shadow-sm border-0">
     <div class="card-body">
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h4 class="mb-0 fw-bold">Quản lý danh mục</h4>
-                <small class="text-muted">Cửa hàng thú cưng</small>
+                <small class="text-muted">Hệ thống quản trị cửa hàng</small>
             </div>
 
             <button class="btn btn-primary" onclick="openCreateModal()">
@@ -14,63 +20,78 @@
             </button>
         </div>
 
-        <table class="table table-bordered align-middle">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Tên</th>
-                    <th>Mô tả</th>
-                    <th>Ảnh</th>
-                    <th>Kích hoạt</th>
-                    <th class="text-end">Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr id="row-@item.Id">
-                        <td>@item.Id</td>
-
-                        <!-- TÊN -->
-                        <td class="fw-semibold">@item.Name</td>
-
-                        <!-- MÔ TẢ -->
-                        <td class="text-muted">@item.Description</td>
-
-                        <!-- ẢNH -->
-                        <td>
-                            <img src="@(string.IsNullOrEmpty(item.ImageUrl)
-                                             ? "/images/no-image.png"
-                                             : item.ImageUrl)"
-                             class="rounded"
-                             style="width:50px;height:50px;object-fit:cover" />
-                    </td>
-
-                        <!-- KÍCH HOẠT -->
-                        <td>
-                            <label class="switch">
-                                <input type="checkbox"
-                                       @(item.IsActive ? "checked" : "")
-                                       onchange="toggleActive(@item.Id, this)">
-                                <span class="slider"></span>
-                            </label>
-                        </td>
-
-                        <!-- ACTION -->
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-warning me-1"
-                                    onclick="openEdit(@item.Id)">
-                                <i class="fa fa-pen"></i>
-                            </button>
-                            <button class="btn btn-sm btn-danger"
-                                    onclick="deleteCategory(@item.Id)">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </td>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                    <tr class="text-center">
+                        <th style="width:60px">ID</th>
+                        <th style="width:180px">Tên danh mục</th>
+                        <th>Mô tả</th>
+                        <th style="width:80px">Ảnh</th>
+                        <th style="width:110px">Sản phẩm</th>
+                        <th style="width:110px">Hiển thị</th>
+                        <th style="width:120px" class="text-end">Hành động</th>
                     </tr>
-                                }
-            </tbody>
-        </table>
+                </thead>
+
+                <tbody>
+                    @{
+                        int stt = 1;
+                    }
+                    @foreach (var item in Model)
+                    {
+                        <tr id="row-@item.Id">
+                            <!-- STT -->
+                            <td class="text-center stt">@stt</td>
+
+                            <!-- TÊN -->
+                            <td class="fw-semibold">@item.Name</td>
+
+                            <!-- MÔ TẢ -->
+                            <td class="text-muted">@item.Description</td>
+
+                            <!-- ẢNH -->
+                            <td>
+                                <img src="@(string.IsNullOrEmpty(item.ImageUrl)
+                                                              ? "/images/no-image.png"
+                                                              : item.ImageUrl)"
+                                 class="rounded"
+                                 style="width:50px;height:50px;object-fit:cover" />
+                        </td>
+
+                            <!-- SỐ SẢN PHẨM -->
+                            <td>
+                                <span class="badge bg-info">@item.Products?.Count()</span>
+                            </td>
+
+                            <!-- KÍCH HOẠT -->
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox"
+                                           @(item.IsActive ? "checked" : "")
+                                           onchange="toggleActive(@item.Id, this)">
+                                    <span class="slider"></span>
+                                </label>
+                            </td>
+
+                            <!-- ACTION -->
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-warning me-1"
+                                        onclick="openEdit(@item.Id)">
+                                    <i class="fa fa-pen"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger"
+                                        onclick="deleteCategory(@item.Id)">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                                        stt++;
+                    }
+                </tbody>
+            </table>
+        </div>
 
     </div>
 </div>

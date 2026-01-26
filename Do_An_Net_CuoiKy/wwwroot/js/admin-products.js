@@ -1,19 +1,19 @@
-﻿
-let productModal;
+﻿let productModal;
+
+function getToken() {
+    return $('input[name="__RequestVerificationToken"]').val();
+}
 
 $(document).ready(function () {
     productModal = new bootstrap.Modal(document.getElementById('productModal'));
 
-    // Preview image
-    $("#productImage").on("change", function () {
+    $(document).on("change", "#productImage", function () {
         const file = this.files[0];
         if (!file) return;
 
         const reader = new FileReader();
         reader.onload = e => {
-            $("#previewProductImage")
-                .attr("src", e.target.result)
-                .show();
+            $("#previewProductImage").attr("src", e.target.result).show();
         };
         reader.readAsDataURL(file);
     });
@@ -26,31 +26,28 @@ function loadCategories(selectedId = null, callback = null) {
             html += `<option value="${c.id}" ${selectedId == c.id ? "selected" : ""}>${c.name}</option>`;
         });
         $("#productCategory").html(html);
-
         if (callback) callback();
     });
 }
 
 function openCreateProduct() {
-    $("#productId").val("");
-    $("#productName").val("");
-    $("#productDescription").val("");
-    $("#productPrice").val("");
-    $("#productOldPrice").val("");
-    $("#productStock").val("");
-    $("#productActive").prop("checked", true);
+    $("#productModalTitle").text("Thêm sản phẩm");
 
-    $("#productImage").val("");
-    $("#previewProductImage").hide().attr("src", "");
+    $("#productForm")[0].reset();
+    $("#previewProductImage").hide();
 
-    loadCategories(null, () => {
-        productModal.show();
-    });
+    $("#productId").removeAttr("name").val("");
+
+    loadCategories(null, () => productModal.show());
 }
 
 function openEditProduct(id) {
     $.get("/Admin/Products/Get/" + id, function (p) {
-        $("#productId").val(p.id);
+
+        $("#productModalTitle").text("Chỉnh sửa sản phẩm");
+
+        $("#productId").attr("name", "Id").val(p.id);
+
         $("#productName").val(p.name);
         $("#productDescription").val(p.description);
         $("#productPrice").val(p.price);
@@ -58,60 +55,29 @@ function openEditProduct(id) {
         $("#productStock").val(p.stock);
         $("#productActive").prop("checked", p.isActive);
 
-        loadCategories(p.categoryId, () => {
-            productModal.show();
-        });
-
         if (p.imageUrl) {
             $("#previewProductImage").attr("src", p.imageUrl).show();
         } else {
             $("#previewProductImage").hide();
         }
+
+        loadCategories(p.categoryId, () => productModal.show());
     });
 }
 
-function saveProduct() {
+$(document).on("submit", "#productForm", function (e) {
+    e.preventDefault();
 
-    // VALIDATE CLIENT
-    if (!$("#productName").val()) {
-        alert("Vui lòng nhập tên sản phẩm");
-        return;
-    }
-
-    if (!$("#productCategory").val()) {
-        alert("Vui lòng chọn danh mục");
-        return;
-    }
-
-    if (!$("#productPrice").val()) {
-        alert("Vui lòng nhập giá");
-        return;
-    }
-
-    let formData = new FormData();
-    const id = $("#productId").val();
-
-    formData.append("Id", id);
-    formData.append("Name", $("#productName").val());
-    formData.append("Description", $("#productDescription").val());
-    formData.append("Price", $("#productPrice").val());
-    formData.append("OldPrice", $("#productOldPrice").val());
-    formData.append("Stock", $("#productStock").val());
-    formData.append("CategoryId", $("#productCategory").val());
-    formData.append("IsActive", $("#productActive").is(":checked"));
-
-    const image = $("#productImage")[0].files[0];
-    if (image) {
-        formData.append("imageFile", image);
-    }
-
-    const url = id
-        ? "/Admin/Products/EditAjax"
-        : "/Admin/Products/CreateAjax";
+    let formData = new FormData(this);
+    let hasId = $("#productId").attr("name") === "Id";
+    let url = hasId ? "/Admin/Products/EditAjax" : "/Admin/Products/CreateAjax";
 
     $.ajax({
         url: url,
         type: "POST",
+        headers: {
+            'RequestVerificationToken': getToken()
+        },
         data: formData,
         processData: false,
         contentType: false,
@@ -122,25 +88,71 @@ function saveProduct() {
                 alert(res.message || "Lỗi khi lưu sản phẩm");
             }
         },
-        error: function (err) {
-            console.error(err);
-            alert("Lỗi server (500)");
+        error: function () {
+            alert("Lỗi server");
         }
     });
-}
+});
 
 function deleteProduct(id) {
     if (!confirm("Xóa sản phẩm này?")) return;
 
-    $.post("/Admin/Products/DeleteAjax/" + id, function (res) {
-        if (res.success) {
-            $("#row-" + id).remove();
-        } else {
-            alert("Không thể xóa");
+    $.ajax({
+        url: "/Admin/Products/DeleteAjax",
+        type: "POST",
+        headers: {
+            'RequestVerificationToken': getToken()
+        },
+        data: { id: id },
+        success: function (res) {
+            if (res.success) {
+                $("#row-" + id).fadeOut(300, function () {
+                    $(this).remove();
+                    updateSTT();
+                });
+            } else {
+                alert(res.message || "Không thể xóa");
+            }
         }
     });
 }
 
-function toggleProductActive(id) {
-    $.post("/Admin/Products/ToggleActive/" + id);
+function toggleProductActive(id, checkbox) {
+    let oldValue = !checkbox.checked;
+
+    $.ajax({
+        url: "/Admin/Products/ToggleActive",
+        type: "POST",
+        headers: {
+            'RequestVerificationToken': getToken()
+        },
+        data: { id: id },
+        success: function (res) {
+            if (res.success) {
+
+                let countEl = $("#activeCount");
+                let current = parseInt(countEl.text());
+
+                if (checkbox.checked) {
+                    countEl.text(current + 1);
+                } else {
+                    countEl.text(current - 1);
+                }
+
+            } else {
+                checkbox.checked = oldValue;
+                alert("Không thể cập nhật trạng thái");
+            }
+        },
+        error: function () {
+            checkbox.checked = oldValue;
+            alert("Lỗi server");
+        }
+    });
+}
+
+function updateSTT() {
+    $("#productTable tbody tr").each(function (index) {
+        $(this).find(".stt").text(index + 1);
+    });
 }

@@ -4,88 +4,94 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
 
-            <!-- Header -->
-            <div class="modal-header">
-                <h5 class="modal-title fw-bold">Sản phẩm</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
+            <form id="productForm" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
 
-            <!-- Body -->
-            <div class="modal-body">
-
-                <input type="hidden" id="productId" />
-
-                <div class="row g-3">
-
-                    <!-- Tên -->
-                    <div class="col-md-6">
-                        <label class="form-label">Tên sản phẩm</label>
-                        <input type="text" id="productName" class="form-control" />
-                    </div>
-
-                    <!-- Danh mục -->
-                    <div class="col-md-6">
-                        <label class="form-label">Danh mục</label>
-                        <select id="productCategory" class="form-select">
-                            <option value="">-- Chọn danh mục --</option>
-                        </select>
-                    </div>
-
-                    <!-- Giá -->
-                    <div class="col-md-4">
-                        <label class="form-label">Giá</label>
-                        <input type="number" id="productPrice" class="form-control" />
-                    </div>
-
-                    <!-- Giá cũ -->
-                    <div class="col-md-4">
-                        <label class="form-label">Giá cũ</label>
-                        <input type="number" id="productOldPrice" class="form-control" />
-                    </div>
-
-                    <!-- Tồn kho -->
-                    <div class="col-md-4">
-                        <label class="form-label">Tồn kho</label>
-                        <input type="number" id="productStock" class="form-control" />
-                    </div>
-
-                    <!-- Mô tả -->
-                    <div class="col-12">
-                        <label class="form-label">Mô tả</label>
-                        <textarea id="productDescription" class="form-control" rows="3"></textarea>
-                    </div>
-
-                    <!-- Ảnh -->
-                    <div class="col-md-6">
-                        <label class="form-label">Ảnh sản phẩm</label>
-                        <input type="file" id="productImage" class="form-control" accept="image/*" />
-                    </div>
-
-                    <!-- Preview -->
-                    <div class="col-md-6 d-flex align-items-end">
-                        <img id="previewProductImage"
-                             src=""
-                             class="border rounded"
-                             style="max-height:120px; display:none;" />
-                    </div>
-
-                    <!-- Active -->
-                    <div class="col-12">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="productActive" checked>
-                            <label class="form-check-label">Kích hoạt sản phẩm</label>
-                        </div>
-                    </div>
-
+                <!-- Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="productModalTitle">Sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-            </div>
 
-            <!-- Footer -->
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button class="btn btn-primary" onclick="saveProduct()">Lưu</button>
-            </div>
+                <!-- Body -->
+                <div class="modal-body">
 
+                    <!-- ID -->
+                    <input type="hidden" id="productId" name="Id" />
+
+                    <div class="row g-3">
+
+                        <!-- Tên -->
+                        <div class="col-md-6">
+                            <label class="form-label">Tên sản phẩm</label>
+                            <input type="text" id="productName" name="Name" class="form-control" required />
+                        </div>
+
+                        <!-- Danh mục -->
+                        <div class="col-md-6">
+                            <label class="form-label">Danh mục</label>
+                            <select id="productCategory" name="CategoryId" class="form-select" required>
+                                <option value="">-- Chọn danh mục --</option>
+                            </select>
+                        </div>
+
+                        <!-- Giá -->
+                        <div class="col-md-4">
+                            <label class="form-label">Giá</label>
+                            <input type="number" id="productPrice" name="Price" class="form-control" required />
+                        </div>
+
+                        <!-- Giá cũ -->
+                        <div class="col-md-4">
+                            <label class="form-label">Giá cũ</label>
+                            <input type="number" id="productOldPrice" name="OldPrice" class="form-control" />
+                        </div>
+
+                        <!-- Tồn kho -->
+                        <div class="col-md-4">
+                            <label class="form-label">Tồn kho</label>
+                            <input type="number" id="productStock" name="Stock" class="form-control" required />
+                        </div>
+
+                        <!-- Mô tả -->
+                        <div class="col-12">
+                            <label class="form-label">Mô tả</label>
+                            <textarea id="productDescription" name="Description" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <!-- Ảnh -->
+                        <div class="col-md-6">
+                            <label class="form-label">Ảnh sản phẩm</label>
+                            <input type="file" id="productImage" name="imageFile" class="form-control" accept="image/*" />
+                        </div>
+
+                        <!-- Preview -->
+                        <div class="col-md-6 d-flex align-items-end">
+                            <img id="previewProductImage"
+                                 src=""
+                                 class="border rounded"
+                                 style="max-height:120px; display:none;" />
+                        </div>
+
+                        <!-- Active -->
+                        <div class="col-12">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="IsActive" value="false" />
+                                <input class="form-check-input" type="checkbox" id="productActive" name="IsActive" value="true" checked>
+                                <label class="form-check-label">Kích hoạt sản phẩm</label>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+
+            </form>
         </div>
     </div>
 </div>
