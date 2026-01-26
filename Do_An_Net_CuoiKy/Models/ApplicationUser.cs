@@ -1,0 +1,17 @@
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
+
+namespace Do_An_Net_CuoiKy.Models
+{
+    public class ApplicationUser : IdentityUser
+    {
+        [Required]
+        [StringLength(100)]
+        public string FullName { get; set; } = string.Empty;
+
+        [StringLength(255)]
+        public string? Address { get; set; }
+
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+    }
+}
