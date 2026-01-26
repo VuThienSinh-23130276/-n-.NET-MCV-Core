@@ -33,8 +33,15 @@
                         </div>
                         <h5 class="card-title text-truncate">@item.Name</h5>
                         <div class="price mb-2">
-                            <span class="fw-bold text-danger fs-5">@item.Price.ToString("#,##0")đ</span>
-                        </div>
+    <span class="fw-bold text-danger fs-5">@item.Price.ToString("#,##0")đ</span>
+    
+    @if (item.OldPrice > item.Price)
+    {
+        <span class="text-muted text-decoration-line-through small ms-2">
+            @item.OldPrice.Value.ToString("#,##0")đ
+        </span>
+    }
+</div>
                         <div class="d-grid gap-2 mt-auto">
                             <button class="btn btn-primary">Thêm</button>
                             <a href="@Url.Action("Details", new { id = item.Id })" class="btn btn-outline-primary">Chi Tiết</a>
