@@ -12,7 +12,7 @@ namespace Do_An_Net_CuoiKy.Models
         public int ProductId { get; set; }
 
         [Required]
-        public int UserId { get; set; }
+        public String  UserId { get; set; }
 
         [Required]
         [Range(1, 5, ErrorMessage = "Đánh giá phải từ 1 đến 5 sao")]
@@ -28,6 +28,6 @@ namespace Do_An_Net_CuoiKy.Models
         public virtual Product? Product { get; set; }
 
         [ForeignKey("UserId")]
-        public virtual User? User { get; set; }
+        public virtual ApplicationUser? User { get; set; }
     }
 }

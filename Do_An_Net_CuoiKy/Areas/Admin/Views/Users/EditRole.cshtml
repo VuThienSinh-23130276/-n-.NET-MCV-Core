@@ -1,0 +1,15 @@
+﻿@using Do_An_Net_CuoiKy.Models
+@model ApplicationUser
+
+<h3>Phân quyền: @Model.Email</h3>
+
+<form method="post">
+    <select name="role" class="form-select">
+        @foreach (var r in ViewBag.Roles)
+        {
+            <option value="@r.Name">@r.Name</option>
+        }
+    </select>
+
+    <button class="btn btn-primary mt-3">Lưu</button>
+</form>

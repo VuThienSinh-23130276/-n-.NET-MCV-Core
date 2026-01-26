@@ -17,6 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Models\ViewModel\" />
+    <Folder Include="Scripts\" />
     <Folder Include="wwwroot\upload\" />
   </ItemGroup>
 

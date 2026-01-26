@@ -1,0 +1,43 @@
+﻿@using Do_An_Net_CuoiKy.Models
+@model Order
+
+<h4>Chi tiết đơn hàng #ORD-@Model.Id</h4>
+
+<p><b>Người nhận:</b> @Model.ShippingName</p>
+<p><b>SĐT:</b> @Model.ShippingPhone</p>
+<p><b>Địa chỉ:</b> @Model.ShippingAddress</p>
+<p><b>Ghi chú:</b> @Model.Notes</p>
+
+<form asp-action="UpdateStatus" method="post" class="mb-3">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <select name="status" class="form-select w-25 d-inline">
+        <option selected>@Model.Status</option>
+        <option>Pending</option>
+        <option>Processing</option>
+        <option>Completed</option>
+        <option>Cancelled</option>
+    </select>
+    <button class="btn btn-success ms-2">Cập nhật</button>
+</form>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Sản phẩm</th>
+            <th>SL</th>
+            <th>Giá</th>
+            <th>Tổng</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var d in Model.OrderDetails)
+        {
+            <tr>
+                <td>@d.Product.Name</td>
+                <td>@d.Quantity</td>
+                <td>@d.Price.ToString("N0") đ</td>
+                <td>@(d.Quantity* d.Price).ToString("N0") đ</td>
+            </tr>
+        }
+    </tbody>
+</table>

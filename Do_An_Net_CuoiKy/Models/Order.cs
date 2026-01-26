@@ -9,7 +9,7 @@ namespace Do_An_Net_CuoiKy.Models
         public int Id { get; set; }
 
         [Required]
-        public int UserId { get; set; }
+        public String  UserId { get; set; }
 
         [Required]
         public DateTime OrderDate { get; set; } = DateTime.Now;
@@ -35,7 +35,7 @@ namespace Do_An_Net_CuoiKy.Models
 
         // Navigation properties
         [ForeignKey("UserId")]
-        public virtual User? User { get; set; }
+        public virtual ApplicationUser? User { get; set; }
 
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
     }
