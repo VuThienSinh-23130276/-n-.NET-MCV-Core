@@ -126,21 +126,37 @@
     <script>
         $(document).ready(function () {
                     // Xử lý khi người dùng submit form tìm kiếm trên Header (Layout)
-        $('form[role="search"]').submit(function(e) {
-            // Chỉ chặn submit mặc định nếu đang ở trang Sản phẩm (có #filterForm)
+                // Code mới: Gõ đến đâu tìm đến đó (Có Debounce 0.5 giây)
+        var timeoutId; // 1. Tạo biến để giữ cái "đồng hồ bấm giờ"
+
+        // Thay vì .submit(), ta bắt sự kiện 'input' (người dùng gõ phím)
+        $('input[name="searchString"]').on('input', function() {
+
+            // 2. Chỉ chạy khi đang ở trang sản phẩm (có bộ lọc)
             if ($('#filterForm').length > 0) {
-                e.preventDefault(); // Chặn load lại trang
 
-                // 1. Lấy từ khóa từ thanh search
-                var keyword = $(this).find('input[name="searchString"]').val();
+                var keyword = $(this).val();
 
-                // 2. Gán từ khóa vào input hidden trong bộ lọc Sidebar
-                $('input[name="searchString"][type="hidden"]').val(keyword);
+                // 3. Nếu người dùng đang gõ tiếp, HỦY cái lệnh tìm kiếm cũ đi
+                clearTimeout(timeoutId);
 
-                // 3. Gọi hàm submit của bộ lọc để chạy AJAX
-                $('#filterForm').submit();
+                // 4. Đặt một lệnh mới: "Chờ 500ms (0.5 giây) nữa hãy tìm nhé"
+                timeoutId = setTimeout(function() {
+
+                    // --- Lúc này người dùng đã dừng tay 0.5s rồi, bắt đầu làm việc ---
+
+                    // Đồng bộ từ khóa sang bộ lọc bên trái
+                    $('input[name="searchString"][type="hidden"]').val(keyword);
+
+                    // Kích hoạt bộ lọc chạy AJAX (Logic cũ vẫn dùng lại được ngon lành)
+                    $('#filterForm').submit();
+
+                }, 500); // Bạn có thể chỉnh số này: 300 là nhanh, 1000 là chậm
             }
         });
+
+        // Giữ lại cái này để chặn bấm Enter bị load lại trang (nếu lỡ tay bấm)
+        $('form[role="search"]').submit(function(e) { e.preventDefault(); });
 
             // Hàm chung để gọi AJAX
             function loadProducts(url, data) {
